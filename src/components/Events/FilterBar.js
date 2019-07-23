@@ -49,18 +49,34 @@ class FilterBar extends React.Component {
       radius: 20,
       startTime: new Date().toISOString(),
       errors: {},
-      queryLocation: ''
+      queryLocation: 'Tukl Kaiserslautern'
     }
   }
   componentDidMount() {
     const filterEvent = {
       radius: this.state.radius,
-      location: {
-        lat: 49.442860,
-        lng: 7.740194
-      }
+      queryLocation: this.state.queryLocation,
+      searchText: this.state.searchText,
+      startTime: this.state.startTime
     }
     this.props.setLocations(filterEvent);
+  }
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.UI.errors) {
+      this.setState({
+        errors: nextProps.UI.errors
+      })
+    }
+    if(!nextProps.UI.errors && !nextProps.UI.loading) {
+      this.setState({
+        searchText: '',
+        location: null,
+        radius: 20,
+        startTime: new Date().toISOString(),
+        errors: {},
+        queryLocation: ''
+      })
+    }
   }
   handleRadiusChange = (event, newRadius) => {
     this.setState({
@@ -101,6 +117,7 @@ class FilterBar extends React.Component {
               placeholder= 'Find by name, tags'
               type="search"
               fullWidth
+              name="searchText"
               value={this.state.searchText}
               onChange={this.handleChange}
               className={classes.textField}
@@ -144,6 +161,8 @@ class FilterBar extends React.Component {
                 name="queryLocation"
                 margin="normal"
                 variant="outlined"
+                error={this.state.errors.location ? true : false}
+                helperText={this.state.errors.location}
                 value={this.state.queryLocation}
                 placeholder="Search a location"
                 onChange={this.handleChange}
@@ -176,11 +195,13 @@ class FilterBar extends React.Component {
 FilterBar.propTypes = {
   classes: PropTypes.object.isRequired,
   locations: PropTypes.array.isRequired,
-  setLocations: PropTypes.func.isRequired
+  setLocations: PropTypes.func.isRequired,
+  UI: PropTypes.object.isRequired
 }
 
 const mapStateToProps = (state) => ({
-  locations: state.data.locations
+  locations: state.data.locations,
+  UI: state.UI
 })
 
 export default connect(mapStateToProps, {setLocations})(withStyles(styles)(FilterBar));

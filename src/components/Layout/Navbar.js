@@ -6,6 +6,7 @@ import MyButton from '../../utils/MyButton';
 import AddEvent from '../Events/AddEvent';
 //redux Imports
 import {connect} from 'react-redux';
+import {logoutUser} from '../../redux/actions/userActions';
 //MUI imports
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -29,6 +30,9 @@ class Navbar extends Component {
                   </MyButton>
                 </Link>
                 <AddEvent/>
+                <MyButton tip='Logout' onClick={this.props.logoutUser}>
+                  {'Logout'}
+                </MyButton>
               </Fragment>
             ) : (
               <Fragment>
@@ -45,11 +49,12 @@ class Navbar extends Component {
 }
 
 Navbar.propTypes = {
-  authenticated: PropTypes.bool.isRequired
+  authenticated: PropTypes.bool.isRequired,
+  logoutUser: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => ({
   authenticated: state.user.authenticated
 })
 
-export default connect(mapStateToProps)(Navbar);
+export default connect(mapStateToProps, {logoutUser})(Navbar);

@@ -24,13 +24,13 @@ class Home extends React.Component {
     const {locations} = this.props.data
     return (
       <Grid container spacing={6}>
-        <Grid item sm={12}>
+        <Grid item sm={12} xs>
           <FilterBar/>
         </Grid>
-        <Grid item sm={12}>
+        <Grid item sm={12} xs>
           <Map/>
         </Grid>
-        <Grid item sm xs={12}>
+        <Grid item sm xs={12} xs>
           {
             locations.length > 0 ? <EventSlider/> : null
           }

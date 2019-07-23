@@ -82,6 +82,7 @@ class Signup extends React.Component {
     return (
       <Grid container className={classes.form}>
         <Grid item sm/>
+        <Grid item sm/>
         <Grid item sm xs>
           <img className={classes.image} src={AppIcon} alt='app icon'/>
           <Typography variant='h2' className={classes.pageTitle}>
@@ -155,6 +156,7 @@ class Signup extends React.Component {
             <small>Already have an account? Log in <Link to='/login'>here</Link></small>
           </form>
         </Grid>
+        <Grid item sm/>
         <Grid item sm/>
       </Grid>
     );

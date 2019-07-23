@@ -9,6 +9,7 @@ import {
 } from '../types';
 import axios from 'axios';
 import config from '../../utils/config';
+import {setAuthorizationHeader} from './userActions'
 
 const {MAP_API_KEY} = config;
 
@@ -57,6 +58,8 @@ export const setLocations = (filter) => (dispatch) => {
         lat: res.data.results[0].geometry.location.lat,
         lng: res.data.results[0].geometry.location.lng
       }
+      const token = localStorage.getItem('FBIdToken')
+      setAuthorizationHeader(token);
       axios.post('/events', filter).then((res) => {
         dispatch({
           type: SET_LOCATIONS,
@@ -65,7 +68,11 @@ export const setLocations = (filter) => (dispatch) => {
         dispatch({
           type: STOP_LOADING_UI
         });
+        dispatch({
+          type: CLEAR_ERRORS
+        });
       }).catch((err) => {
+        console.log('err: ', err);
         dispatch({
           type: SET_ERRORS,
           payload: err.response.data
