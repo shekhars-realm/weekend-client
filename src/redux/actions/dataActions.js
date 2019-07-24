@@ -51,7 +51,7 @@ export const setLocations = (filter) => (dispatch) => {
     type: LOADING_UI
   });
   delete axios.defaults.headers.common["Authorization"];
-  axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${filter.queryLocation}&key=${MAP_API_KEY}`).then((res) => {
+  axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${filter.queryLocation}&key=${process.env.MAP_API_KEY}`).then((res) => {
     if(res.data.results.length > 0) {
       delete filter.queryLocation;
       filter.location = {
