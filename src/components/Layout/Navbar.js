@@ -19,7 +19,7 @@ class Navbar extends Component {
   render() {
     const {authenticated} = this.props;
     return (
-      <AppBar>
+      <AppBar className="appBar">
         <Toolbar className='nav-container'>
           {
             authenticated ? (

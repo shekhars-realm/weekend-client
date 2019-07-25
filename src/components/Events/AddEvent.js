@@ -27,7 +27,7 @@ import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
 //redux Imports
 import {connect} from 'react-redux';
-import {addEvent,clearErrors} from '../../redux/actions/dataActions';
+import {addEvent,clearErrors, verifyLocation} from '../../redux/actions/dataActions';
 
 const styles = (theme) => ({
   textField: {
@@ -104,10 +104,7 @@ class AddEvent extends Component {
         name: '',
         description: '',
         tags: [],
-        location: {
-          lat: 49.438845,
-          lng: 7.744389
-        },
+        queryLocation: '',
         headCount: 0,
         errors: {}
       })
@@ -140,7 +137,7 @@ class AddEvent extends Component {
       headCount: this.state.headCount,
       tags: this.state.tags,
       startTime: this.state.startTime,
-      endTime: this.state.endTime,
+      endTime: this.state.endTime
     }
    this.props.addEvent(newEvent);
   }
@@ -156,7 +153,7 @@ class AddEvent extends Component {
     this.setState({tags})
   }
   render () {
-    const {classes, UI: {loading}} = this.props;
+    const {classes, meetingPoint, UI: {loading, verifyingLocation}} = this.props;
     return (
       <Fragment>
         <MyButton tip='Add Event' onClick={this.handleOpen}>
@@ -216,13 +213,18 @@ class AddEvent extends Component {
                       label='Location'
                       placeholder= 'Select meeting point'
                       variant="outlined"
+                      name="queryLocation"
+                      value={this.state.queryLocation}
+                      onChange={this.handleChange}
                       error={this.state.errors.location ? true : false}
                       helperText={this.state.errors.location}
                     />
+                  <Button variant='contained' color='primary' onClick={() => {this.props.verifyLocation(this.state.queryLocation)}}>
+                      Verify
+                      {verifyingLocation && <CircularProgress size={30} className={classes.progressSpinner}/>}
+                    </Button>
                     <Divider style={{margin: 20}}/>
                     <Button variant='contained' color='primary' onClick={this.getUserLocation}>{'My Location'}</Button>
-                    <Divider style={{margin: 20}}/>
-                    <Button variant='contained' color='primary' onClick={() =>{this.setState({openMap: true})}}>{'Use Maps'}</Button>
                   </div>
                 </Grid>
                 <Grid item xs={12} sm={4}>
@@ -314,11 +316,14 @@ AddEvent.propTypes = {
   classes: PropTypes.object.isRequired,
   addEvent: PropTypes.func.isRequired,
   clearErrors: PropTypes.func.isRequired,
-  UI: PropTypes.object.isRequired
+  UI: PropTypes.object.isRequired,
+  meetingPoint: PropTypes.object.isRequired,
+  verifyLocation: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => ({
-  UI: state.UI
+  UI: state.UI,
+  meetingPoint: state.data.meetingPoint
 })
 
-export default connect(mapStateToProps, {addEvent, clearErrors})(withStyles(styles)(AddEvent));
+export default connect(mapStateToProps, {addEvent, clearErrors, verifyLocation})(withStyles(styles)(AddEvent));

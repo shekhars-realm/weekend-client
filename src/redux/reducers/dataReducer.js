@@ -1,14 +1,14 @@
 import {
   LOADING_DATA,
   SET_LOCATIONS,
-  ADD_EVENT
+  ADD_EVENT,
+  SET_MEETING_POINT
 } from '../types';
 const initialState = {
-  shouts: [],
-  shout: {},
   events: [],
   locations: [],
   event: {},
+  meetingPoint: {},
   loading: false
 };
 
@@ -27,6 +27,11 @@ export default function(state = initialState, action) {
           action.payload,
           ...state.locations
         ]
+      }
+    case SET_MEETING_POINT:
+      return {
+        ...state,
+        meetingPoint: action.payload
       }
     case SET_LOCATIONS:
       return {

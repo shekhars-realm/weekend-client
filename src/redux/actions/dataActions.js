@@ -3,15 +3,15 @@ import {
   LOADING_UI,
   CLEAR_ERRORS,
   SET_ERRORS,
+  SET_MEETING_POINT,
   STOP_LOADING_UI,
   SET_LOCATIONS,
-  ADD_EVENT
+  ADD_EVENT,
+  VERIFYING_LOCATION,
+  STOP_VERIFYING_LOCATION
 } from '../types';
 import axios from 'axios';
-import config from '../../utils/config';
 import {setAuthorizationHeader} from './userActions'
-
-const {MAP_API_KEY} = config;
 
 export const addEvent = (event) => (dispatch) => {
   dispatch({type: LOADING_UI});
@@ -51,15 +51,14 @@ export const setLocations = (filter) => (dispatch) => {
     type: LOADING_UI
   });
   delete axios.defaults.headers.common["Authorization"];
-  axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${filter.queryLocation}&key=${process.env.MAP_API_KEY}`).then((res) => {
+  axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${filter.queryLocation}&key=${process.env.REACT_APP_API_KEY}`).then((res) => {
+    axios.defaults.headers.common['Authorization'] = localStorage.getItem('FBIdToken');
     if(res.data.results.length > 0) {
       delete filter.queryLocation;
       filter.location = {
         lat: res.data.results[0].geometry.location.lat,
         lng: res.data.results[0].geometry.location.lng
       }
-      const token = localStorage.getItem('FBIdToken')
-      setAuthorizationHeader(token);
       axios.post('/events', filter).then((res) => {
         dispatch({
           type: SET_LOCATIONS,
@@ -72,7 +71,7 @@ export const setLocations = (filter) => (dispatch) => {
           type: CLEAR_ERRORS
         });
       }).catch((err) => {
-        console.log('err: ', err);
+        console.log('initial load error: ', err);
         dispatch({
           type: SET_ERRORS,
           payload: err.response.data
@@ -91,4 +90,42 @@ export const setLocations = (filter) => (dispatch) => {
     console.log(err);
   })
 
+}
+
+export const verifyLocation = (locationString) => (dispatch) => {
+  console.log(process.env);
+  dispatch({
+    type: VERIFYING_LOCATION
+  });
+  delete axios.defaults.headers.common["Authorization"];
+  axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${locationString}&key=${process.env.REACT_APP_API_KEY}`)
+  .then((res) => {
+    axios.defaults.headers.common['Authorization'] = localStorage.getItem('FBIdToken');
+    if(res.data.results.length > 0) {
+      dispatch({
+        type: STOP_VERIFYING_LOCATION
+      });
+      dispatch({
+        type: SET_MEETING_POINT,
+        payload: {
+          lat: res.data.results[0].geometry.location.lat,
+          lng: res.data.results[0].geometry.location.lng
+        }
+      })
+    } else {
+      dispatch({
+        type: SET_ERRORS,
+        payload: {
+          location: 'Location is unknown!'
+        }
+      })
+    }
+  }).catch((err) => {
+    dispatch({
+      type: SET_ERRORS,
+      payload: {
+        location: 'Location is unknown!'
+      }
+    })
+  })
 }

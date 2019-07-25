@@ -14,9 +14,17 @@ body {
 .nav-container {
   margin: auto;
 }
+.appBar{
+  
+}
 a{
   text-decoration: none;
 }
 .nav-container svg{
   color: white;
+}
+
+.informationText {
+  text-align: center;
+  margin: 10px;
 }

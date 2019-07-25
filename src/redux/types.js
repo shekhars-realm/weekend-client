@@ -7,9 +7,12 @@ export const MARK_NOTIFICATIONS_READ = 'MARK_NOTIFICATIONS_READ';
 //ui reducer types
 export const SET_ERRORS = 'SET_ERRORS';
 export const LOADING_UI = 'LOADIN_UI';
+export const VERIFYING_LOCATION = 'VERIFYING_LOCATION';
+export const STOP_VERIFYING_LOCATION = 'STOP_VERIFYING_LOCATION';
 export const STOP_LOADING_UI = 'STOP_LOADIN_UI';
 export const LOADING_DATA = 'LOADING_DATA';
 export const CLEAR_ERRORS = 'CLEAR_ERRORS'
 //data reducer types
 export const SET_LOCATIONS = 'SET_LOCATIONS';
 export const ADD_EVENT = 'ADD_EVENT';
+export const SET_MEETING_POINT = 'SET_MEETING_POINT';

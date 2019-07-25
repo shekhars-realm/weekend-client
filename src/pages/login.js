@@ -121,7 +121,7 @@ class Login extends React.Component {
                 </Typography>
               )
             }
-            <Button disabled={loading} type='submit' variant='contained' color='primary' className={classes.button}>
+            <Button disabled={loading} type='submit' variant='contained' color='secondary' className={classes.button}>
               Login
               {
                 loading && (

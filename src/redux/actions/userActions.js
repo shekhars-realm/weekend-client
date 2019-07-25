@@ -79,6 +79,7 @@ export const editUserDetails = (userDetails) => (dispatch) => {
 }
 
 export const setAuthorizationHeader = (token) => {
+  console.log(token);
   const FBIdToken = `Bearer ${token}`;
   localStorage.setItem('FBIdToken', `Bearer ${token}`);
   axios.defaults.headers.common['Authorization'] = FBIdToken;

@@ -24,6 +24,7 @@ var scollWidth = 0;
  var sliderContainer = $(".slider-container");
  var slide = $(".slide");
  var btn = $(".btn")
+ var actionBtn = $(".actionBtn")
 
  //counts
  var scollWidth = 0;
@@ -40,12 +41,12 @@ var scollWidth = 0;
     showCount = 6;
 }
  var videoWidth = ((windowWidth - controlsWidth * 2) / showCount );
- var videoHeight = Math.round(videoWidth / (16/9));
+ var videoHeight = Math.round(videoWidth / (13/9));
 
  var videoWidthDiff = (videoWidth * scaling) - videoWidth;
  var videoHeightDiff = (videoHeight * scaling) - videoHeight;
 
-
+console.log(videoHeight);
 
  //set sizes
  sliderFrame.width(windowWidth);
@@ -59,16 +60,19 @@ var scollWidth = 0;
  sliderContainer.css("top", (videoHeightDiff / 2));
  sliderContainer.css("margin-left", (controlsWidth));
 
- console.log((videoWidth * videoCount) + videoWidthDiff, windowWidth);
 
  slide.height(videoHeight);
  slide.width(videoWidth);
  btn.height(videoHeight)
  btn.css('top', ((videoHeight * scaling) - (videoHeight))/2)
 
+ const buttonWidth = $(this).find(".wrapper").width()
+
+ actionBtn.width(buttonWidth)
+
  //hover effect
  $(".slide").mouseover(function() {
-     $('#cardAction').css("display", 'block')
+     $(this).find(".actionBtn").show()
      $(this).css("width", videoWidth * scaling);
      $(this).css("height", videoHeight * scaling);
      $(this).css("top", -(videoHeightDiff / 2));
@@ -82,13 +86,12 @@ var scollWidth = 0;
          $(this).parent().css("margin-left", - (videoWidthDiff / 2));
      }
  }).mouseout(function() {
-     $('#cardAction').css("display", 'none')
+     $(this).find(".actionBtn").hide();
      $(this).css("width", videoWidth * 1);
      $(this).css("height", videoHeight * 1);
      $(this).css("top", 0);
      $(this).parent().css("margin-left", controlsWidth);
  });
- console.log((videoWidth * videoCount) + videoWidthDiff, windowWidth);
  // controls
  controls(frameWidth, scollWidth);
 }
@@ -159,7 +162,11 @@ class EventSlider extends React.Component {
             <div class="slider-container">
               {
                 locations.length > 0 && locations.map(event => {
-                  return <div class="slide"><EventCard event={event}/></div>
+                  return <div class="slide">
+                    <EventCard event={event}/>
+                    <button variant="contained" class="actionBtn infoBtn">i</button>
+                    <button variant="contained" class="actionBtn getinBtn">lets go</button>
+                  </div>
                 })
               }
             </div>

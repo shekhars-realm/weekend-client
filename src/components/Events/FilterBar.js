@@ -2,8 +2,6 @@ import React ,{Component, Fragment} from 'react'
 import PropTypes from 'prop-types'
 import 'date-fns';
 import Script from 'react-load-script';
-import LocationSearch from '../../utils/LocationSearch'
-import config from '../../utils/config'
 import axios from 'axios'
 //mui imports
 import {withStyles} from '@material-ui/core/styles'
@@ -22,8 +20,6 @@ import DateFnsUtils from '@date-io/date-fns';
 import {connect} from 'react-redux';
 import {setLocations} from '../../redux/actions/dataActions';
 
-const {MAP_API_KEY} = config
-
 const styles = theme => ({
   sliderContainer: {
     width: 300,
@@ -37,7 +33,32 @@ const styles = theme => ({
   filterButton: {
     background: 'transparent',
     margin: 24
-  }
+  },
+  cssLabel: {
+    color : 'white'
+  },
+
+  cssOutlinedInput: {
+    '&$cssFocused $notchedOutline': {
+      borderColor: `${theme.palette.primary.main} !important`,
+    }
+  },
+  cssOutlinedInput: {
+    '&$cssFocused $notchedOutline': {
+      borderColor: `${theme.palette.primary.main} !important`,
+    }
+  },
+
+  cssFocused: {
+    color: 'white',
+    borderWidth: '1px',
+    borderColor: 'white !important'
+  },
+
+  notchedOutline: {
+    borderWidth: '1px',
+    borderColor: 'white !important'
+  },
 })
 
 class FilterBar extends React.Component {
@@ -63,6 +84,7 @@ class FilterBar extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if(nextProps.UI.errors) {
+      console.log('filter error load: ', nextProps.UI.errors);
       this.setState({
         errors: nextProps.UI.errors
       })
@@ -72,9 +94,9 @@ class FilterBar extends React.Component {
         searchText: '',
         location: null,
         radius: 20,
-        startTime: new Date().toISOString(),
+        startTime: "2019-07-01T19:43:00.000Z",
         errors: {},
-        queryLocation: ''
+        queryLocation: 'meisenweg 6 kaiserslautern'
       })
     }
   }

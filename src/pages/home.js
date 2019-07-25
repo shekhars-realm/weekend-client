@@ -8,6 +8,7 @@ import EventSlider from  '../components/Events/EventSlider';
 import FilterBar from '../components/Events/FilterBar';
 //Mui imports
 import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
 //redux imports
 import {connect} from 'react-redux';
 
@@ -24,15 +25,19 @@ class Home extends React.Component {
     const {locations} = this.props.data
     return (
       <Grid container spacing={6}>
-        <Grid item sm={12} xs>
+        <Grid item sm={1}/>
+        <Grid item sm={10} xs>
           <FilterBar/>
         </Grid>
-        <Grid item sm={12} xs>
+        <Grid item sm={1}/>
+        <Grid item sm={1}/>
+        <Grid item sm={10}>
           <Map/>
         </Grid>
+        <Grid item sm={1}/>
         <Grid item sm xs={12} xs>
           {
-            locations.length > 0 ? <EventSlider/> : null
+            locations.length > 0 ? <EventSlider/> : <Typography className='informationText' variant='h5' color='primary'>{'No events found, try switching location, search radius or time.'}</Typography>
           }
         </Grid>
       </Grid>

@@ -34,11 +34,10 @@ class Map extends React.PureComponent {
       })
     })
     const userLocation = {
-      location: {
-        lat: 49.442860,
-        lng: 7.740194
-      },
-      radius: 10
+      radius: 20,
+      queryLocation: 'TU kaiserslautern',
+      searchText: '',
+      startTime: new Date().toISOString()
     };
     this.props.setLocations(userLocation)
 
@@ -48,7 +47,7 @@ class Map extends React.PureComponent {
     const {locations} = this.props
     const MyMapComponent = compose(
       withProps({
-        googleMapURL: `https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=${process.env.MAP_API_KEY}`,
+        googleMapURL: `https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=${process.env.REACT_APP_API_KEY}`,
         loadingElement: <div style={{ height: `100%` }} />,
         containerElement: <div style={{ height: `690px` }} />,
         mapElement: <div style={{ height: `100%` }} />,

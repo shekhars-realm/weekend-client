@@ -2,42 +2,16 @@ import React from 'react';
 import dayjs from 'dayjs';
 import $ from 'jquery';
 import PropTypes from 'prop-types';
+import '../../utils/EventCard.css'
 //mui imports
-import { withStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import Collapse from '@material-ui/core/Collapse';
-import CardActions from '@material-ui/core/CardActions';
 import Button from '@material-ui/core/Button';
-import CardMedia from '@material-ui/core/CardMedia';
-import Typography from '@material-ui/core/Typography';
-import InfoIcon from '@material-ui/icons/Info'
+import { withStyles } from '@material-ui/core/styles';
+import CloclkIcon from '@material-ui/icons/AccessTime';
+import LocationOn from '@material-ui/icons/LocationOn';
+
 
 const styles = theme => ({
-  card: {
-    position: 'relative',
-    display: 'block',
-    height: '100%',
-    background: 'transparent'
-  },
-  image: {
-    minWidth: 200,
-    background: 'cover'
-  },
-  content: {
-   padding: 25,
-   objectFit: 'cover'
- },
- cardAction: {
-   position: 'absolute',
-   bottom: 0
- },
- addEventBtn: {
-   float: 'right',
- },
- infoButton: {
 
- }
 });
 
 
@@ -47,40 +21,29 @@ class EventCard extends React.Component {
     expanded: false
   }
 
-  componentDidMount() {
-    $(document).ready(function() {
-      $('.content').mouseover(function() {
-        console.log('hover');
-        this.setState({
-          expanded: true
-        })
-      }).mouseout(function() {
-        this.setState({
-          expanded: false
-        })
-      })
-    })
-  }
-
   render() {
 
     const {classes, event} = this.props;
     return (
-      <Card className={classes.card}>
-        <CardContent id='cardContent' className={classes.content}>
-          <Typography variant="h5" color="primary">{event.name}</Typography>
-          <Typography variant="body1" color="textSecondary">{new Date(event.startTime).toLocaleString()}</Typography>
-          <Typography variant="body2">{event.description+event.description+event.description+event.description+event.description+event.description+event.description}</Typography>
-        </CardContent>
-        <CardActions className={classes.cardAction} disableSpacing>
-          <Button variant='contained' className='infoButton'>
-            <InfoIcon/>
-          </Button>
-          <Button variant='contained' className='addEventBtn'>
-            Get in
-          </Button>
-        </CardActions>
-      </Card>
+      <div class="wrapper">
+        <a href="#" class="meetup">{event.name}</a>
+        <h3 class="group">{event.description}</h3>
+        <p class="details">
+          <span class="row">
+            <i class="material-icons md-36 icon"><CloclkIcon/></i>
+            <span class="row-item">
+            <time>{new Date(event.startTime).toLocaleString()}</time>
+            </span>
+          </span>
+          <span class="row">
+            <i class="material-icons md-36 icon"><LocationOn/></i>
+            <span class="row-item">
+            <strong>3 Kms</strong>
+            </span>
+          </span>
+        </p>
+      </div>
+
     );
   }
 }

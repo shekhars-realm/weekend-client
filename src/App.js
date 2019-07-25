@@ -21,6 +21,10 @@ import user from './pages/user';
 import Navbar from './components/Layout/Navbar'
 import AuthRoute from './utils/AuthRoute'
 
+require('dotenv').config()
+
+console.log(process.env);
+
 const theme = createMuiTheme(themeFile);
 
 axios.defaults.baseURL = 'https://europe-west2-weekend-62173.cloudfunctions.net/api';
