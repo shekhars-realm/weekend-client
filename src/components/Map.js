@@ -20,31 +20,34 @@ const markerStyling= {
 class Map extends React.PureComponent {
   state = {
     isMarkerShown: false,
-    lat: 49.680111,
-    lng: 7.856220,
+    location: {},
     markers: []
   }
 
   componentDidMount() {
-    console.log(hiking);
-    navigator.geolocation.getCurrentPosition(pos => {
-      this.setState({
-        lat: pos.coords.latitude,
-        lng: pos.coords.longitude,
-      })
-    })
+    console.log(this.props);
     const userLocation = {
       radius: 20,
-      queryLocation: 'TU kaiserslautern',
+      location: this.props.userLocation,
       searchText: '',
       startTime: new Date().toISOString()
     };
+    this.setState({
+      location: this.props.userLocation
+    })
     this.props.setLocations(userLocation)
+  }
 
+  componentDidUpdate(prevProps, prevState) {
+    if(this.props.userLocation !== this.state.location) {
+      this.setState({
+        location: this.props.userLocation
+      })
+    }
   }
 
   render() {
-    const {locations} = this.props
+    const {locations, userLocation} = this.props
     const MyMapComponent = compose(
       withProps({
         googleMapURL: `https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=${process.env.REACT_APP_API_KEY}`,
@@ -71,7 +74,7 @@ class Map extends React.PureComponent {
     )((props) =>
       <GoogleMap
         defaultZoom={15}
-        defaultCenter={{ lat: this.state.lat, lng: this.state.lng }}
+        defaultCenter={this.state.location}
         defaultOptions={{styles: mapStyles}}
       >
         <MarkerClusterer
@@ -117,11 +120,13 @@ class Map extends React.PureComponent {
 
 Map.propTypes = {
   locations: PropTypes.array.isRequired,
+  userLocation: PropTypes.object.isRequired,
   setLocations: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => ({
-  locations: state.data.locations
+  locations: state.data.locations,
+  userLocation: state.user.userLocation
 })
 
 export default connect(mapStateToProps, {setLocations})(Map)

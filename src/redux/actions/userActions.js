@@ -1,4 +1,4 @@
-import {SET_USER, SET_ERRORS, CLEAR_ERRORS, LOADING_UI, SET_UNAUTHENTICATED, LOADING_USER} from '../types';
+import {SET_USER, SET_ERRORS, CLEAR_ERRORS, LOADING_UI, SET_UNAUTHENTICATED, LOADING_USER, SET_USER_LOCATION} from '../types';
 import axios from 'axios';
 
 export const loginUser = (userData, history) => (dispatch) => {
@@ -67,6 +67,14 @@ export const uploadImage = (formData) => (dispatch) => {
   }).catch((err) => {
     console.log(err);
   })
+}
+
+export const setUserLocation = (location) => (dispatch) => {
+  console.log('in user location: ', location);
+  dispatch({
+    type: SET_USER_LOCATION,
+    payload: location
+  });
 }
 
 export const editUserDetails = (userDetails) => (dispatch) => {

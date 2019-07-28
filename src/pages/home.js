@@ -11,18 +11,35 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 //redux imports
 import {connect} from 'react-redux';
+import {setUserLocation} from '../redux/actions/userActions';
+
+const getLocationOptions = {
+  enableHighAccuracy: true,
+  timeout: 50,
+  maximumAge: 0
+}
 
 class Home extends React.Component {
 
-  state = {
-    shouts: null
-  }
 
   componentDidMount() {
-
+    navigator.geolocation.getCurrentPosition(this.getlocationSuccess, this.getLocationError, getLocationOptions)
+  }
+  getlocationSuccess = (pos) => {
+    this.props.setUserLocation({
+      lat: pos.coords.latitude,
+      lng: pos.coords.longitude,
+    })
+  }
+  getLocationError = (err) => {
+    this.props.setUserLocation({
+      lat: 49.4252252,
+      lng: 7.7481535,
+    })
   }
   render() {
     const {locations} = this.props.data
+    console.log('in hone page',locations);
     return (
       <Grid container spacing={6}>
         <Grid item sm={1}/>
@@ -46,11 +63,12 @@ class Home extends React.Component {
 }
 
 Home.propTypes = {
-  data: PropTypes.object.isRequired
+  data: PropTypes.object.isRequired,
+  setUserLocation: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => ({
   data: state.data
 })
 
-export default connect(mapStateToProps)(Home);
+export default connect(mapStateToProps, {setUserLocation})(Home);

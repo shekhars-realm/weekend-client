@@ -8,10 +8,11 @@ import {
   SET_LOCATIONS,
   ADD_EVENT,
   VERIFYING_LOCATION,
-  STOP_VERIFYING_LOCATION
+  STOP_VERIFYING_LOCATION,
+  SET_USER_LOCATION
 } from '../types';
 import axios from 'axios';
-import {setAuthorizationHeader} from './userActions'
+import {setAuthorizationHeader, setUserLocation} from './userActions'
 
 export const addEvent = (event) => (dispatch) => {
   dispatch({type: LOADING_UI});
@@ -28,6 +29,10 @@ export const addEvent = (event) => (dispatch) => {
         endTime: res.data.endTime
       }
     });
+    dispatch({
+      type: SET_MEETING_POINT,
+      payload: {}
+    })
     dispatch({
       type: CLEAR_ERRORS
     });
@@ -46,7 +51,7 @@ export const clearErrors = () => (dispatch) => {
 }
 
 
-export const setLocations = (filter) => (dispatch) => {
+export const filterEvents = (filter) => (dispatch) => {
   dispatch({
     type: LOADING_UI
   });
@@ -55,6 +60,13 @@ export const setLocations = (filter) => (dispatch) => {
     axios.defaults.headers.common['Authorization'] = localStorage.getItem('FBIdToken');
     if(res.data.results.length > 0) {
       delete filter.queryLocation;
+      dispatch({
+        type: SET_USER_LOCATION,
+        payload: {
+          lat: res.data.results[0].geometry.location.lat,
+          lng: res.data.results[0].geometry.location.lng
+        }
+      })
       filter.location = {
         lat: res.data.results[0].geometry.location.lat,
         lng: res.data.results[0].geometry.location.lng
@@ -88,6 +100,31 @@ export const setLocations = (filter) => (dispatch) => {
     }
   }).catch(err => {
     console.log(err);
+  })
+
+}
+
+export const setLocations = (filter) => (dispatch) => {
+  dispatch({
+    type: LOADING_UI
+  });
+  axios.post('/events', filter).then((res) => {
+    dispatch({
+      type: SET_LOCATIONS,
+      payload: res.data
+    })
+    dispatch({
+      type: STOP_LOADING_UI
+    });
+    dispatch({
+      type: CLEAR_ERRORS
+    });
+  }).catch((err) => {
+    console.log('initial load error: ', err);
+    dispatch({
+      type: SET_ERRORS,
+      payload: err.response.data
+    })
   })
 
 }

@@ -18,7 +18,7 @@ import {
 import DateFnsUtils from '@date-io/date-fns';
 //reduc improts
 import {connect} from 'react-redux';
-import {setLocations} from '../../redux/actions/dataActions';
+import {filterEvents} from '../../redux/actions/dataActions';
 
 const styles = theme => ({
   sliderContainer: {
@@ -70,17 +70,8 @@ class FilterBar extends React.Component {
       radius: 20,
       startTime: new Date().toISOString(),
       errors: {},
-      queryLocation: 'Tukl Kaiserslautern'
+      queryLocation: ''
     }
-  }
-  componentDidMount() {
-    const filterEvent = {
-      radius: this.state.radius,
-      queryLocation: this.state.queryLocation,
-      searchText: this.state.searchText,
-      startTime: this.state.startTime
-    }
-    this.props.setLocations(filterEvent);
   }
   componentWillReceiveProps(nextProps) {
     if(nextProps.UI.errors) {
@@ -116,7 +107,7 @@ class FilterBar extends React.Component {
       searchText: this.state.searchText,
       startTime: this.state.startTime
     }
-    this.props.setLocations(filterEvent);
+    this.props.filterEvents(filterEvent);
   }
   handleChange = (event) => {
     this.setState({
@@ -217,7 +208,7 @@ class FilterBar extends React.Component {
 FilterBar.propTypes = {
   classes: PropTypes.object.isRequired,
   locations: PropTypes.array.isRequired,
-  setLocations: PropTypes.func.isRequired,
+  filterEvents: PropTypes.func.isRequired,
   UI: PropTypes.object.isRequired
 }
 
@@ -226,4 +217,4 @@ const mapStateToProps = (state) => ({
   UI: state.UI
 })
 
-export default connect(mapStateToProps, {setLocations})(withStyles(styles)(FilterBar));
+export default connect(mapStateToProps, {filterEvents})(withStyles(styles)(FilterBar));

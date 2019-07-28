@@ -83,10 +83,7 @@ class AddEvent extends Component {
     tags: [],
     startTime: new Date().toISOString(),
     endTime: new Date(new Date().getTime() + 1800000).toISOString(),
-    location: {
-      lat: 49.438845,
-      lng: 7.744389
-    },
+    displayLocation: '',
     headCount: 0,
     errors: {}
   }
@@ -137,7 +134,8 @@ class AddEvent extends Component {
       headCount: this.state.headCount,
       tags: this.state.tags,
       startTime: this.state.startTime,
-      endTime: this.state.endTime
+      endTime: this.state.endTime,
+      location: this.props.meetingPoint
     }
    this.props.addEvent(newEvent);
   }
@@ -153,7 +151,7 @@ class AddEvent extends Component {
     this.setState({tags})
   }
   render () {
-    const {classes, meetingPoint, UI: {loading, verifyingLocation}} = this.props;
+    const {classes, meetingPoint, UI: {loading, verifyingLocation}, userLocation} = this.props;
     return (
       <Fragment>
         <MyButton tip='Add Event' onClick={this.handleOpen}>
@@ -220,8 +218,12 @@ class AddEvent extends Component {
                       helperText={this.state.errors.location}
                     />
                   <Button variant='contained' color='primary' onClick={() => {this.props.verifyLocation(this.state.queryLocation)}}>
-                      Verify
-                      {verifyingLocation && <CircularProgress size={30} className={classes.progressSpinner}/>}
+                      {
+                        verifyingLocation ? <CircularProgress size={30} className={classes.progressSpinner}/> :
+                        (
+                          Object.keys(meetingPoint).length > 0 ? 'Done' : 'Verify'
+                        )
+                      }
                     </Button>
                     <Divider style={{margin: 20}}/>
                     <Button variant='contained' color='primary' onClick={this.getUserLocation}>{'My Location'}</Button>
@@ -273,7 +275,7 @@ class AddEvent extends Component {
                   id="outlined-multiline-static"
                   label="Head Count"
                   name='headCount'
-                  value={this.state.description}
+                  value={this.state.headCount}
                   onChange={this.handleChange}
                   fullWidth
                   placeholder= 'Number of people you want in!'
@@ -318,12 +320,14 @@ AddEvent.propTypes = {
   clearErrors: PropTypes.func.isRequired,
   UI: PropTypes.object.isRequired,
   meetingPoint: PropTypes.object.isRequired,
-  verifyLocation: PropTypes.func.isRequired
+  verifyLocation: PropTypes.func.isRequired,
+  userLocation: PropTypes.object.isRequired
 }
 
 const mapStateToProps = (state) => ({
   UI: state.UI,
-  meetingPoint: state.data.meetingPoint
+  meetingPoint: state.data.meetingPoint,
+  userLocation: state.user.userLocation
 })
 
 export default connect(mapStateToProps, {addEvent, clearErrors, verifyLocation})(withStyles(styles)(AddEvent));

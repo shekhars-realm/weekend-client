@@ -44,9 +44,12 @@ if(token) {
   }
 }
 
+const mapAPI = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_API_KEY}&libraries=places`
+
 function App() {
   return (
     <MuiThemeProvider theme={theme}>
+      <script src={mapAPI}></script>
       <Provider store={store}>
         <Router>
           <Navbar/>
