@@ -11,13 +11,16 @@ import {logoutUser} from '../../redux/actions/userActions';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
+import AccountCircle from '@material-ui/icons/AccountCircle';
 //import icons
 import AddIcon from '@material-ui/icons/Add';
 import HomeIcon from '@material-ui/icons/Home';
+import ChatIcon from '@material-ui/icons/Chat';
 
 class Navbar extends Component {
   render() {
-    const {authenticated} = this.props;
+    const {authenticated, imageUrl, loadingUser} = this.props;
+    const profile = loadingUser ? <AccountCircle style={{fontSize: 60}}/> : <img src={imageUrl} className='userImageNav'/>
     return (
       <AppBar className="appBar">
         <Toolbar className='nav-container'>
@@ -30,9 +33,19 @@ class Navbar extends Component {
                   </MyButton>
                 </Link>
                 <AddEvent/>
+                <Link to='/chat'>
+                  <MyButton tip='Chat'>
+                    <ChatIcon/>
+                  </MyButton>
+                </Link>
                 <MyButton tip='Logout' onClick={this.props.logoutUser}>
-                  {'Logout'}
+                  Logout
                 </MyButton>
+                <Link to='/profile'>
+                  <div className="userProfileBtn">
+                    {profile}
+                  </div>
+                </Link>
               </Fragment>
             ) : (
               <Fragment>
@@ -50,11 +63,15 @@ class Navbar extends Component {
 
 Navbar.propTypes = {
   authenticated: PropTypes.bool.isRequired,
+  loading: PropTypes.bool.isRequired,
+  imageUrl: PropTypes.string.isRequired,
   logoutUser: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => ({
-  authenticated: state.user.authenticated
+  authenticated: state.user.authenticated,
+  imageUrl: state.user.credentials.imageUrl,
+  loadingUser: state.user.loading
 })
 
 export default connect(mapStateToProps, {logoutUser})(Navbar);

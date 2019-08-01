@@ -21,33 +21,33 @@ class Map extends React.PureComponent {
   state = {
     isMarkerShown: false,
     location: {},
-    markers: []
+    markers: [],
+    filter: {}
   }
 
   componentDidMount() {
-    console.log(this.props);
-    const userLocation = {
+    const filter = {
       radius: 20,
       location: this.props.userLocation,
       searchText: '',
       startTime: new Date().toISOString()
     };
     this.setState({
-      location: this.props.userLocation
+      filter: this.props.filter
     })
-    this.props.setLocations(userLocation)
+    this.props.setLocations(filter)
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if(this.props.userLocation !== this.state.location) {
+    if(this.props.filter && this.props.filter.location !== this.state.filter.location) {
       this.setState({
-        location: this.props.userLocation
+        filter: this.props.filter
       })
     }
   }
 
   render() {
-    const {locations, userLocation} = this.props
+    const {locations, userLocation, filter} = this.props
     const MyMapComponent = compose(
       withProps({
         googleMapURL: `https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=${process.env.REACT_APP_API_KEY}`,
@@ -65,8 +65,6 @@ class Map extends React.PureComponent {
       withHandlers({
         onMarkerClustererClick: () => (markerClusterer) => {
           const clickedMarkers = markerClusterer.getMarkers()
-          console.log(`Current clicked markers length: ${clickedMarkers.length}`)
-          console.log(clickedMarkers)
         }
       }),
       withScriptjs,
@@ -74,7 +72,7 @@ class Map extends React.PureComponent {
     )((props) =>
       <GoogleMap
         defaultZoom={15}
-        defaultCenter={this.state.location}
+        defaultCenter={this.state.filter.location}
         defaultOptions={{styles: mapStyles}}
       >
         <MarkerClusterer
@@ -126,7 +124,8 @@ Map.propTypes = {
 
 const mapStateToProps = (state) => ({
   locations: state.data.locations,
-  userLocation: state.user.userLocation
+  userLocation: state.user.userLocation,
+  filter: state.user.filter
 })
 
 export default connect(mapStateToProps, {setLocations})(Map)

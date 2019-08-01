@@ -75,7 +75,6 @@ class FilterBar extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if(nextProps.UI.errors) {
-      console.log('filter error load: ', nextProps.UI.errors);
       this.setState({
         errors: nextProps.UI.errors
       })

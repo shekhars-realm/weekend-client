@@ -9,39 +9,67 @@ import {
   ADD_EVENT,
   VERIFYING_LOCATION,
   STOP_VERIFYING_LOCATION,
-  SET_USER_LOCATION
+  SET_USER_LOCATION,
+  EVENT_ADDED,
+  SET_USER_FILTER,
+  SET_EVENT,
+  SET_USER_EVENTS
 } from '../types';
 import axios from 'axios';
 import {setAuthorizationHeader, setUserLocation} from './userActions'
 
 export const addEvent = (event) => (dispatch) => {
   dispatch({type: LOADING_UI});
-  axios.post('/event', event).then((res) => {
-    dispatch({
-      type: ADD_EVENT,
-      payload: {
-        name: res.data.name,
-        description: res.data.description,
-        geoHash: res.data.geoHash,
-        geoPoint: res.data.geoPoint,
-        primatyTag: res.data.tags[0],
-        startTime: res.data.startTime,
-        endTime: res.data.endTime
+  delete axios.defaults.headers.common["Authorization"];
+  axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${event.queryLocation}&key=${process.env.REACT_APP_API_KEY}`).then((res) => {
+    if(res.data.results.length > 0) {
+      axios.defaults.headers.common['Authorization'] = localStorage.getItem('FBIdToken');
+      event.location = {
+        lat: res.data.results[0].geometry.location.lat,
+        lng: res.data.results[0].geometry.location.lng
       }
-    });
-    dispatch({
-      type: SET_MEETING_POINT,
-      payload: {}
-    })
-    dispatch({
-      type: CLEAR_ERRORS
-    });
-  }).catch((err) => {
-    dispatch({
-      type: SET_ERRORS,
-      payload: err.response.data
-    });
+      axios.post('/event', event).then((res) => {
+        dispatch({
+          type: EVENT_ADDED
+        });
+        dispatch({
+          type: ADD_EVENT,
+          payload: {
+            name: res.data.name,
+            description: res.data.description,
+            geoHash: res.data.geoHash,
+            geoPoint: res.data.geoPoint,
+            primatyTag: res.data.tags[0],
+            startTime: res.data.startTime,
+            endTime: res.data.endTime
+          }
+        });
+        dispatch({
+          type: SET_MEETING_POINT,
+          payload: {}
+        })
+        dispatch({
+          type: CLEAR_ERRORS
+        });
+      }).catch((err) => {
+        dispatch({
+          type: SET_ERRORS,
+          payload: err.response.data
+        });
+      })
+    } else {
+      dispatch({
+        type: SET_ERRORS,
+        payload: {
+          location: 'Unknown location!'
+        }
+      })
+      throw 'Unknown location!';
+    }
+  }).catch(err => {
+    console.log(err);
   })
+
 }
 
 export const clearErrors = () => (dispatch) => {
@@ -50,6 +78,19 @@ export const clearErrors = () => (dispatch) => {
   });
 }
 
+export const getUserEvents = (handle) => (dispatch) => {
+  dispatch({
+    type: LOADING_DATA
+  })
+  axios.get(`/events/${handle}`).then((res) => {
+    dispatch({
+      type: SET_USER_EVENTS,
+      payload: res.data.events
+    })
+  }).catch((err) => {
+    console.log(err);
+  })
+}
 
 export const filterEvents = (filter) => (dispatch) => {
   dispatch({
@@ -61,10 +102,15 @@ export const filterEvents = (filter) => (dispatch) => {
     if(res.data.results.length > 0) {
       delete filter.queryLocation;
       dispatch({
-        type: SET_USER_LOCATION,
+        type: SET_USER_FILTER,
         payload: {
-          lat: res.data.results[0].geometry.location.lat,
-          lng: res.data.results[0].geometry.location.lng
+          location: {
+            lat: res.data.results[0].geometry.location.lat,
+            lng: res.data.results[0].geometry.location.lng
+          },
+          radius: filter.radius,
+          searchText: filter.searchText,
+          startTime: filter.startTime
         }
       })
       filter.location = {
@@ -83,7 +129,6 @@ export const filterEvents = (filter) => (dispatch) => {
           type: CLEAR_ERRORS
         });
       }).catch((err) => {
-        console.log('initial load error: ', err);
         dispatch({
           type: SET_ERRORS,
           payload: err.response.data
@@ -120,7 +165,6 @@ export const setLocations = (filter) => (dispatch) => {
       type: CLEAR_ERRORS
     });
   }).catch((err) => {
-    console.log('initial load error: ', err);
     dispatch({
       type: SET_ERRORS,
       payload: err.response.data
@@ -129,8 +173,27 @@ export const setLocations = (filter) => (dispatch) => {
 
 }
 
+export const getEvent = (eventId) => (dispatch) => {
+  dispatch({
+    type: LOADING_UI
+  });
+  axios.get(`/event/${eventId}`).then((res) => {
+    console.log(res);
+    dispatch({
+      type: SET_EVENT,
+      payload: res.data.event
+    });
+    dispatch({
+      type: STOP_LOADING_UI
+    });
+  }).catch((err) => {
+    dispatch({
+      type: SET_ERRORS
+    })
+  })
+}
+
 export const verifyLocation = (locationString) => (dispatch) => {
-  console.log(process.env);
   dispatch({
     type: VERIFYING_LOCATION
   });

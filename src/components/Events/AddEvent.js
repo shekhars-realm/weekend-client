@@ -5,6 +5,7 @@ import MyButton from '../../utils/MyButton';
 import TagSuggestions from  '../../utils/TagSuggestions'
 //Muiimports
 import 'date-fns';
+import CheckedIconOutlined from '@material-ui/icons/CheckCircleOutline';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -72,20 +73,30 @@ const styles = (theme) => ({
   chip: {
     margin: theme.spacing(0.5, 0.25),
   },
+  verifyLocationBtn: {
+    '-webkit-transition': '0.5s',
+    transition: '0.5s',
+    margin: 10
+  }
 });
 
 class AddEvent extends Component {
-  state={
-    open: false,
-    eventAdded: false,
-    name: '',
-    description: '',
-    tags: [],
-    startTime: new Date().toISOString(),
-    endTime: new Date(new Date().getTime() + 1800000).toISOString(),
-    displayLocation: '',
-    headCount: 0,
-    errors: {}
+  constructor(props) {
+    super(props)
+    this.state={
+      open: false,
+      eventAdded: false,
+      name: '',
+      description: '',
+      tags: [],
+      startTime: new Date().toISOString(),
+      endTime: new Date(new Date().getTime() + 1800000).toISOString(),
+      displayLocation: '',
+      location: {},
+      headCount: 0,
+      errors: {}
+    }
+    this.getUserLocation = this.getUserLocation.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -135,7 +146,8 @@ class AddEvent extends Component {
       tags: this.state.tags,
       startTime: this.state.startTime,
       endTime: this.state.endTime,
-      location: this.props.meetingPoint
+      queryLocation: this.state.queryLocation,
+      location: this.state.location
     }
    this.props.addEvent(newEvent);
   }
@@ -151,7 +163,7 @@ class AddEvent extends Component {
     this.setState({tags})
   }
   render () {
-    const {classes, meetingPoint, UI: {loading, verifyingLocation}, userLocation} = this.props;
+    const {classes, UI: {loading}, userLocation} = this.props;
     return (
       <Fragment>
         <MyButton tip='Add Event' onClick={this.handleOpen}>
@@ -217,14 +229,6 @@ class AddEvent extends Component {
                       error={this.state.errors.location ? true : false}
                       helperText={this.state.errors.location}
                     />
-                  <Button variant='contained' color='primary' onClick={() => {this.props.verifyLocation(this.state.queryLocation)}}>
-                      {
-                        verifyingLocation ? <CircularProgress size={30} className={classes.progressSpinner}/> :
-                        (
-                          Object.keys(meetingPoint).length > 0 ? 'Done' : 'Verify'
-                        )
-                      }
-                    </Button>
                     <Divider style={{margin: 20}}/>
                     <Button variant='contained' color='primary' onClick={this.getUserLocation}>{'My Location'}</Button>
                   </div>
@@ -291,24 +295,6 @@ class AddEvent extends Component {
             </form>
           </DialogContent>
         </Dialog>
-        <Dialog
-          open={this.state.eventAdded}
-          onClose={()=> {this.setState({eventAdded: false})}}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">{"Your event has been added!"}</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              {"Alright then, we have added your event. Get to the meeting point on time and don't be a snail!"}
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={()=> {this.setState({eventAdded: false})}} color="primary" autoFocus>
-              Alright!
-            </Button>
-          </DialogActions>
-        </Dialog>
       </Fragment>
     )
   }
@@ -319,14 +305,11 @@ AddEvent.propTypes = {
   addEvent: PropTypes.func.isRequired,
   clearErrors: PropTypes.func.isRequired,
   UI: PropTypes.object.isRequired,
-  meetingPoint: PropTypes.object.isRequired,
-  verifyLocation: PropTypes.func.isRequired,
   userLocation: PropTypes.object.isRequired
 }
 
 const mapStateToProps = (state) => ({
   UI: state.UI,
-  meetingPoint: state.data.meetingPoint,
   userLocation: state.user.userLocation
 })
 

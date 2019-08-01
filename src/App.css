@@ -15,7 +15,7 @@ body {
   margin: auto;
 }
 .appBar{
-  
+
 }
 a{
   text-decoration: none;
@@ -27,4 +27,11 @@ a{
 .informationText {
   text-align: center;
   margin: 10px;
+}
+
+.userImageNav {
+  height: 50px;
+  object-fit: cover;
+  width: 50px;
+  border-radius: 50%;
 }

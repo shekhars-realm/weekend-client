@@ -1,5 +1,13 @@
-import {SET_USER, SET_ERRORS, CLEAR_ERRORS, LOADING_UI, SET_UNAUTHENTICATED, LOADING_USER, SET_USER_LOCATION} from '../types';
-import axios from 'axios';
+import {
+  SET_USER,
+  SET_ERRORS,
+  CLEAR_ERRORS,
+  LOADING_UI,
+  SET_UNAUTHENTICATED,
+  LOADING_USER,
+  SET_USER_LOCATION,
+  SET_USER_FILTER
+} from '../types';import axios from 'axios';
 
 export const loginUser = (userData, history) => (dispatch) => {
     dispatch({type: LOADING_UI});
@@ -22,7 +30,6 @@ export const loginUser = (userData, history) => (dispatch) => {
 export const signUpUser = (newUserData, history) => (dispatch) => {
     dispatch({type: LOADING_UI});
     axios.post('/signup', newUserData).then((res) => {
-      console.log('res: ', res);
         setAuthorizationHeader(res.data.token);
         dispatch(getUserData());
         dispatch({
@@ -51,7 +58,7 @@ export const getUserData = () => (dispatch) => {
     axios.get('/user').then((res) => {
         dispatch({
             type: SET_USER,
-            payload: res.data
+            payload: res.data.credentials
         });
     }).catch((err) => {
         console.log(err);
@@ -69,11 +76,10 @@ export const uploadImage = (formData) => (dispatch) => {
   })
 }
 
-export const setUserLocation = (location) => (dispatch) => {
-  console.log('in user location: ', location);
+export const setUserFilter = (filter) => (dispatch) => {
   dispatch({
-    type: SET_USER_LOCATION,
-    payload: location
+    type: SET_USER_FILTER,
+    payload: filter
   });
 }
 

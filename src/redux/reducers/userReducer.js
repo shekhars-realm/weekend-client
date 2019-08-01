@@ -9,7 +9,8 @@ import {
   LIKE_SHOUT,
   UNLIKE_SHOUT,
   MARK_NOTIFICATIONS_READ,
-  SET_USER_LOCATION
+  SET_USER_LOCATION,
+  SET_USER_FILTER
 } from '../types';
 
 const initialState = {
@@ -21,8 +22,7 @@ const initialState = {
     credentials: {
 
     },
-    likes: [],
-    notifications: []
+    filter: {}
 };
 
 export default function(state = initialState, action) {
@@ -38,12 +38,12 @@ export default function(state = initialState, action) {
             return {
                 authenticated: true,
                 loading: false,
-                ...action.payload
+                credentials: action.payload
             };
-        case SET_USER_LOCATION:
+        case SET_USER_FILTER:
           return {
             ...state,
-            userLocation: action.payload
+            filter: action.payload
           };
         case LOADING_USER:
             return {

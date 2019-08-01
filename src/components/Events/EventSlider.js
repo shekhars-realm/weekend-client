@@ -25,6 +25,7 @@ var scollWidth = 0;
  var slide = $(".slide");
  var btn = $(".btn")
  var actionBtn = $(".actionBtn")
+ var eventCard = $(".wrapper")
 
  //counts
  var scollWidth = 0;
@@ -46,7 +47,6 @@ var scollWidth = 0;
  var videoWidthDiff = (videoWidth * scaling) - videoWidth;
  var videoHeightDiff = (videoHeight * scaling) - videoHeight;
 
-console.log(videoHeight);
 
  //set sizes
  sliderFrame.width(windowWidth);
@@ -69,6 +69,8 @@ console.log(videoHeight);
  const buttonWidth = $(this).find(".wrapper").width()
 
  actionBtn.width(buttonWidth)
+
+ eventCard.height(videoHeight-10)
 
  //hover effect
  $(".slide").mouseover(function() {
@@ -102,8 +104,6 @@ function controls(frameWidth, scollWidth){
  var next = $(".next");
 
  next.on("click", function(){
-     console.log(currentSliderCount);
-     console.log(sliderCount);
      scollWidth = scollWidth + frameWidth;
      $('.slider-container').animate({
          left: - scollWidth
@@ -154,7 +154,6 @@ class EventSlider extends React.Component {
 
   render() {
     const {locations} = this.props;
-    console.log(locations);
     return(
         <div class="slider-frame">
             <div class="btn prev"></div>
@@ -164,8 +163,18 @@ class EventSlider extends React.Component {
                 locations.length > 0 && locations.map(event => {
                   return <div class="slide">
                     <EventCard event={event}/>
-                    <button variant="contained" class="actionBtn infoBtn">i</button>
-                    <button variant="contained" class="actionBtn getinBtn">lets go</button>
+                    <button
+                      onClick={() => {this.props.history.push(`/event/${event.eventId}`)}} variant="contained"
+                      class="actionBtn infoBtn"
+                    >
+                      Info
+                    </button>
+                    <button
+                      variant="contained"
+                      class="actionBtn getinBtn"
+                    >
+                      lets go
+                    </button>
                   </div>
                 })
               }

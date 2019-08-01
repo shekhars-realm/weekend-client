@@ -2,12 +2,16 @@ import {
   LOADING_DATA,
   SET_LOCATIONS,
   ADD_EVENT,
-  SET_MEETING_POINT
+  SET_MEETING_POINT,
+  EVENT_ADDED,
+  SET_EVENT,
+  SET_USER_EVENTS
 } from '../types';
 const initialState = {
+  eventAdded: false,
   events: [],
   locations: [],
-  event: {},
+  eventObj: {},
   meetingPoint: {},
   loading: false
 };
@@ -27,6 +31,22 @@ export default function(state = initialState, action) {
           action.payload,
           ...state.locations
         ]
+      }
+    case SET_USER_EVENTS:
+      return {
+        ...state,
+        loading: false,
+        events: action.payload
+      }
+    case SET_EVENT:
+      return {
+        ...state,
+        eventObj: action.payload
+      }
+    case EVENT_ADDED:
+      return {
+        ...state,
+        eventAdded: true
       }
     case SET_MEETING_POINT:
       return {

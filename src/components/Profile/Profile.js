@@ -95,7 +95,7 @@ class Profile extends React.Component {
       loading,
       authenticated
     }} = this.props;
-    let profilemarkUp  = !loading ? (authenticated ? (
+    let profilemarkUp  = !loading ? (
       <Paper className={classes.paper}>
         <div className={classes.profile}>
           <div className="image-wrapper">
@@ -143,21 +143,7 @@ class Profile extends React.Component {
           <EditDetails/>
         </div>
       </Paper>
-    ) : (
-      <Paper className={classes.paper}>
-        <Typography variant='body2' align='center'>
-          No profile found, please login again!
-        </Typography>
-        <div className={classes.buttons}>
-          <Button variant='contained' color='primary' component={Link} to='/login'>
-            Login
-          </Button>
-          <Button variant='contained' color='secondary' component={Link} to='/signup'>
-            Signup
-          </Button>
-        </div>
-      </Paper>
-    )) : <ProfileSkeleton />
+    ) : <ProfileSkeleton />
     return profilemarkUp
 
   }

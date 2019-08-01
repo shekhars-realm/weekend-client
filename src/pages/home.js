@@ -11,7 +11,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 //redux imports
 import {connect} from 'react-redux';
-import {setUserLocation} from '../redux/actions/userActions';
+import {setUserFilter} from '../redux/actions/userActions';
 
 const getLocationOptions = {
   enableHighAccuracy: true,
@@ -26,20 +26,29 @@ class Home extends React.Component {
     navigator.geolocation.getCurrentPosition(this.getlocationSuccess, this.getLocationError, getLocationOptions)
   }
   getlocationSuccess = (pos) => {
-    this.props.setUserLocation({
-      lat: pos.coords.latitude,
-      lng: pos.coords.longitude,
+    this.props.setUserFilter({
+      location: {
+        lat: pos.coords.latitude,
+        lng: pos.coords.longitude,
+      },
+      radius: 20,
+      searchText: '',
+      startTime: new Date().toISOString()
     })
   }
   getLocationError = (err) => {
     this.props.setUserLocation({
-      lat: 49.4252252,
-      lng: 7.7481535,
+      location: {
+        lat: 49.4252252,
+        lng: 7.7481535,
+      },
+      radius: 20,
+      searchText: '',
+      startTime: new Date().toISOString()
     })
   }
   render() {
     const {locations} = this.props.data
-    console.log('in hone page',locations);
     return (
       <Grid container spacing={6}>
         <Grid item sm={1}/>
@@ -54,7 +63,7 @@ class Home extends React.Component {
         <Grid item sm={1}/>
         <Grid item sm xs={12} xs>
           {
-            locations.length > 0 ? <EventSlider/> : <Typography className='informationText' variant='h5' color='primary'>{'No events found, try switching location, search radius or time.'}</Typography>
+            locations.length > 0 ? <EventSlider history={this.props.history}/> : <Typography className='informationText' variant='h5' color='primary'>{'No events found, try switching location, search radius or time.'}</Typography>
           }
         </Grid>
       </Grid>
@@ -64,11 +73,11 @@ class Home extends React.Component {
 
 Home.propTypes = {
   data: PropTypes.object.isRequired,
-  setUserLocation: PropTypes.func.isRequired
+  setUserFilter: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => ({
   data: state.data
 })
 
-export default connect(mapStateToProps, {setUserLocation})(Home);
+export default connect(mapStateToProps, {setUserFilter})(Home);

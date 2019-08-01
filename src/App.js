@@ -16,7 +16,9 @@ import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 import home from './pages/home';
 import login from './pages/login';
 import signup from './pages/signup';
-import user from './pages/user';
+import profile from './pages/profile';
+import chat from './pages/chat';
+import event from './pages/event';
 //components
 import Navbar from './components/Layout/Navbar'
 import AuthRoute from './utils/AuthRoute'
@@ -58,12 +60,10 @@ function App() {
               <Route exact path='/' component={home}/>
               <AuthRoute exact path='/login' component={login}/>
               <AuthRoute exact path='/signup' component={signup}/>
-              <Route exact path="/users/:handle" component={user} />
-              <Route
-                  exact
-                  path="/users/:handle/shout/:shoutId"
-                  component={user}
-                />
+              <Route exact path='/chat' component={chat}/>
+              <Route exact path='/event/:eventId' component={event}/>
+              <AuthRoute exact path="/profile" component={profile} />
+              <Route exact path="/profile/:handle" component={profile}/>
             </Switch>
           </div>
         </Router>
