@@ -238,7 +238,7 @@ class AddEvent extends Component {
                     <KeyboardDatePicker
                       margin="normal"
                       id="mui-pickers-date"
-                      label="Date"
+                      label="Start Date"
                       variant='outlined'
                       value={this.state.startTime}
                       onChange={this.handleStartTime}
@@ -260,6 +260,18 @@ class AddEvent extends Component {
                         'aria-label': 'change time',
                       }}
                     />
+                    <Divider style={{margin: 20}}/>
+                    <KeyboardDatePicker
+                      margin="normal"
+                      id="mui-pickers-date"
+                      label="End Date"
+                      variant='outlined'
+                      value={this.state.endTime}
+                      onChange={this.handleEndTime}
+                      KeyboardButtonProps={{
+                        'aria-label': 'change date',
+                      }}
+                    />
                     <KeyboardTimePicker
                       margin="normal"
                       id="endTime"
@@ -275,17 +287,6 @@ class AddEvent extends Component {
                       }}
                     />
                   </MuiPickersUtilsProvider>
-                  <TextField
-                  id="outlined-multiline-static"
-                  label="Head Count"
-                  name='headCount'
-                  value={this.state.headCount}
-                  onChange={this.handleChange}
-                  fullWidth
-                  placeholder= 'Number of people you want in!'
-                  margin="normal"
-                  variant="outlined"
-                  />
                 </Grid>
               </Grid>
               <Button type='submit' variant='contained' color='primary' className={classes.submitButton} disabled={loading}>

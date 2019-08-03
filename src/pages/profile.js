@@ -9,6 +9,7 @@ import Profile from '../components/Profile/Profile';
 import PostWrite from '../components/WriteAbout/PostWrite';
 import EventCard from '../components/Events/EventCard';
 import EventListSkeleton from '../components/Skeletons/EventListSkeleton';
+import Schedule from '../components/Profile/Schedule'
 //redux imports
 import { connect } from 'react-redux';
 import {getUserEvents} from '../redux/actions/dataActions';
@@ -55,7 +56,7 @@ class profile extends Component {
           <Profile/>
         </Grid>
         <Grid item sm={4} xs={12}>
-          <PostWrite/>
+          <Schedule/>
         </Grid>
         <Grid item sm={3} xs={12}>
           {eventList}

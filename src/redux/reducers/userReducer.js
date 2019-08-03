@@ -25,6 +25,41 @@ const initialState = {
     filter: {}
 };
 
+const startOfWeek = (date) => {
+  //Get the start of Each week i.e. Monday
+  let diff = date.getDate() - date.getDay() + (
+    date.getDay() === 0
+    ? -6
+    : 1);
+  date.setDate(diff);
+  date.setHours(0);
+  date.setMinutes(0);
+  date.setSeconds(0)
+  date = new Date(date).getTime();
+  return [date, date+86400000, date+(86400000*2), date+(86400000*3), date+(86400000*4), date+(86400000*5)]
+}
+
+const createSchedule = (date, schedule) => {
+  let newSchedule = []
+  startOfWeek(date).forEach(elem => {
+    let weekDay = elem;
+    let events = [];
+    if(schedule) {
+      schedule.forEach(event => {
+        console.log(new Date(event.startTime).getTime(), elem);
+        if(new Date(event.startTime).getTime() >= elem && new Date(event.startTime).getTime() < elem+86400000) {
+          events.push(event)
+        }
+      })
+    }
+    newSchedule.push({
+      weekDay, events
+    })
+  })
+  return newSchedule
+}
+
+
 export default function(state = initialState, action) {
     switch(action.type) {
         case SET_AUTHENTICATED:
@@ -35,6 +70,7 @@ export default function(state = initialState, action) {
         case SET_UNAUTHENTICATED:
             return initialState;
         case SET_USER:
+          action.payload.schedule = createSchedule(new Date(), action.payload.schedule)
             return {
                 authenticated: true,
                 loading: false,

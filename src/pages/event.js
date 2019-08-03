@@ -5,6 +5,7 @@ import {withStyles} from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Divider from '@material-ui/core/Divider';
 //redux imports
 import {connect} from 'react-redux';
 import {getEvent} from '../redux/actions/dataActions'
@@ -32,10 +33,34 @@ const styles = (theme) => ({
     color: 'white',
     borderRadius: 5,
     padding: '5px 0px 8px 0px',
-    margin: 5
+    marginTop: 30
   },
   eventDescription: {
     fontSize: 40
+  },
+  userImage: {
+    margin: 10,
+    height: 50,
+    objectFit: 'cover',
+    width: 50,
+    borderRadius: '50%'
+  },
+  username: {
+    color: theme.palette.primary.main
+  },
+  eventOrganizer: {
+    float: 'right',
+    display: 'flex'
+  },
+  participantsImg: {
+    display: 'flex'
+  },
+  subtitleText: {
+    color: theme.palette.primary.main,
+    fontSize: 30
+  },
+  participants: {
+    marginTop: 30
   }
 })
 
@@ -50,6 +75,7 @@ class Event extends React.Component {
   }
 
   render () {
+    console.log(this.props);
     const {classes, loading, eventObj} = this.props
     const eventDetails = loading ? <CircularProgress size={200} thickness={2} className={classes.progressSpinner}/> : (
       <div className={classes.eventDetails}>
@@ -59,11 +85,35 @@ class Event extends React.Component {
           classes.distanceText
           }>, 3 Kms</span>
         </div>
+        <div className={classes.eventOrganizer}>
+          created by:
+          <p className={classes.username}>@{eventObj.user}</p>, with love
+          {
+            //<img src={eventObj.userImage} className={classes.userImage}/>
+          }
+        </div>
         <div className={classes.eventTime}>
           {new Date(eventObj.startTime).toLocaleString()}
         </div>
         <div className={classes.eventDescription}>
           {eventObj.description}
+        </div>
+        <div className={classes.participants}>
+          <p className={classes.subtitleText}>Gang</p>
+          <Divider/>
+          <div className={classes.participantsImg}>
+          {
+            eventObj.participants && eventObj.participants.map((participant) => {
+              return(
+                <img src={participant.userImage} className={classes.userImage}/>
+              )
+            })
+          }
+        </div>
+        </div>
+        <div className={classes.discussionPanel}>
+          <p className={classes.subtitleText}>Discussions</p>
+          <Divider/>
         </div>
       </div>
     )

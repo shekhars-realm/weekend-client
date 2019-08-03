@@ -4,9 +4,12 @@ import $ from 'jquery';
 import EventCard from './EventCard'
 import PropTypes from 'prop-types'
 //mui imports
+import Snackbar from '@material-ui/core/Snackbar';
+import Slide from '@material-ui/core/Slide';
 import Typography from '@material-ui/core/Typography';
 //redux import
 import {connect} from 'react-redux';
+import {joinEvent, leaveEvent, deleteAlert} from '../../redux/actions/dataActions'
 
 var scaling = 1.50;
 //count
@@ -128,18 +131,38 @@ function controls(frameWidth, scollWidth){
  });
 };
 
+function SlideTransition(props) {
+  return <Slide {...props} direction="up" />;
+}
+
 class EventSlider extends React.Component {
   constructor(props) {
     super(props)
+    this.state={
+      alert:{},
+      locations: this.props.locations,
+      updateEvents: false
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if(this.props.alert.message !== this.state.alert.message) {
+      console.log('alert: ', this.props);
+      this.setState({
+        alert: this.props.alert
+      })
+    }
+    if(this.state.updateEvents) {
+      this.setState({
+        locations: this.props.locations,
+        updateEvents: false
+      })
+    }
   }
 
   componentDidMount() {
-
-
     videoCount = $(".slider-container").children().length;
     sliderCount = videoCount / showCount;
-
-
     $(document).ready(function(){
         //$('.slider-container .slide:nth-last-child(-n+4)').prependTo('.slider-container');
         init();
@@ -150,10 +173,29 @@ class EventSlider extends React.Component {
     });
   }
 
+  actionButtonEvent = (eventId, joined, authenticated) => {
+    if(authenticated) {
+      if(joined) {
+        this.props.leaveEvent(eventId)
+      } else {
+        this.props.joinEvent(eventId)
+      }
+      this.setState({
+        updateEvents: true
+      })
+    } else {
+      this.props.history.push('/login')
+    }
+  }
+
+  handleCloseAlert = () => {
+    this.props.deleteAlert();
+  }
 
 
   render() {
-    const {locations} = this.props;
+    const {authenticated} = this.props;
+    const {locations} = this.state
     return(
         <div class="slider-frame">
             <div class="btn prev"></div>
@@ -170,15 +212,27 @@ class EventSlider extends React.Component {
                       Info
                     </button>
                     <button
+                      onClick={() => this.actionButtonEvent(event.eventId, event.joined, authenticated)}
                       variant="contained"
                       class="actionBtn getinBtn"
                     >
-                      lets go
+                      {
+                        event.joined ? 'Leave' : 'Join'
+                      }
                     </button>
                   </div>
                 })
               }
             </div>
+            <Snackbar
+              open={Object.keys(this.state.alert).length > 0}
+              autoHideDuration={2000}
+              onClose={this.handleClose}
+              ContentProps={{
+                'aria-describedby': 'message-id',
+              }}
+              message={<span id="message-id">{this.state.alert.message}</span>}
+            />
         </div>
     )
   }
@@ -186,11 +240,18 @@ class EventSlider extends React.Component {
 }
 
 EventSlider.propTypes = {
-  locations: PropTypes.array.isRequired
+  locations: PropTypes.array.isRequired,
+  joinEvent: PropTypes.func.isRequired,
+  leaveEvent: PropTypes.func.isRequired,
+  alert: PropTypes.object.isRequired,
+  deleteAlert: PropTypes.func.isRequired,
+  authenticated: PropTypes.bool.isRequired
 }
 
 const mapStateToProps = (state) => ({
-  locations: state.data.locations
+  locations: state.data.locations,
+  alert: state.data.alert,
+  authenticated: state.user.authenticated
 })
 
-export default connect(mapStateToProps)(EventSlider);
+export default connect(mapStateToProps, {joinEvent, leaveEvent, deleteAlert})(EventSlider);

@@ -21,3 +21,7 @@ export const SET_EVENT = 'SET_EVENT';
 export const SET_USER_EVENTS = 'SET_USER_EVENTS';
 export const SET_MEETING_POINT = 'SET_MEETING_POINT';
 export const EVENT_ADDED = 'EVENT_ADDED';
+export const JOIN_EVENT = 'JOIN_EVENT';
+export const LEAVE_EVENT = 'LEAVE_EVENT';
+export const ALERT_USER = 'ALERT_USER';
+export const DELETE_ALERT = 'DELETE_ALERT';

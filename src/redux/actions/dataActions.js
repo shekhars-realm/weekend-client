@@ -13,7 +13,11 @@ import {
   EVENT_ADDED,
   SET_USER_FILTER,
   SET_EVENT,
-  SET_USER_EVENTS
+  SET_USER_EVENTS,
+  DELETE_ALERT,
+  JOIN_EVENT,
+  LEAVE_EVENT,
+  ALERT_USER
 } from '../types';
 import axios from 'axios';
 import {setAuthorizationHeader, setUserLocation} from './userActions'
@@ -72,6 +76,72 @@ export const addEvent = (event) => (dispatch) => {
 
 }
 
+export const joinEvent = (eventId) => (dispatch) => {
+  dispatch({
+    type: JOIN_EVENT,
+    payload: eventId
+  })
+  axios.get(`/event/${eventId}/join`).then((res) => {
+    dispatch({
+      type: ALERT_USER,
+      payload: {
+        alert_type: 'EVENT_ADDED',
+        message: 'Event has been added',
+        variant: 'success'
+      }
+    })
+  }).catch((err) => {
+    dispatch({
+      type: LEAVE_EVENT,
+      payload: eventId
+    })
+    dispatch({
+      type: ALERT_USER,
+      payload: {
+        alert_type: 'EVENT_ADDED_ERROR',
+        message: 'Event cannot be added. Try again later!',
+        variant: 'error'
+      }
+    })
+  })
+}
+
+export const deleteAlert = () => (dispatch) => {
+  dispatch({
+    type: DELETE_ALERT
+  })
+}
+
+export const leaveEvent = (eventId) => (dispatch) => {
+  dispatch({
+    type: LEAVE_EVENT,
+    payload: eventId
+  })
+  axios.get(`/event/${eventId}/join`).then((res) => {
+    dispatch({
+      type: ALERT_USER,
+      payload: {
+        alert_type: 'EVENT_ADDED',
+        message: 'Event has been added',
+        variant: 'success'
+      }
+    })
+  }).catch((err) => {
+    dispatch({
+      type: JOIN_EVENT,
+      payload: eventId
+    })
+    dispatch({
+      type: ALERT_USER,
+      payload: {
+        alert_type: 'EVENT_REMOVED_ERROR',
+        message: 'Event cannot be removed. Try again later!',
+        variant: 'error'
+      }
+    })
+  })
+}
+
 export const clearErrors = () => (dispatch) => {
   dispatch({
     type: CLEAR_ERRORS
@@ -97,6 +167,7 @@ export const filterEvents = (filter) => (dispatch) => {
     type: LOADING_UI
   });
   delete axios.defaults.headers.common["Authorization"];
+  console.log('filter: ', filter);
   axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${filter.queryLocation}&key=${process.env.REACT_APP_API_KEY}`).then((res) => {
     axios.defaults.headers.common['Authorization'] = localStorage.getItem('FBIdToken');
     if(res.data.results.length > 0) {
@@ -118,6 +189,9 @@ export const filterEvents = (filter) => (dispatch) => {
         lng: res.data.results[0].geometry.location.lng
       }
       axios.post('/events', filter).then((res) => {
+        res.data.forEach(event => {
+          event.joined=false
+        })
         dispatch({
           type: SET_LOCATIONS,
           payload: res.data
@@ -154,6 +228,9 @@ export const setLocations = (filter) => (dispatch) => {
     type: LOADING_UI
   });
   axios.post('/events', filter).then((res) => {
+    res.data.forEach(event => {
+      event.joined=false
+    })
     dispatch({
       type: SET_LOCATIONS,
       payload: res.data

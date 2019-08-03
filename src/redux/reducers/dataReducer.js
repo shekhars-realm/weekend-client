@@ -5,7 +5,11 @@ import {
   SET_MEETING_POINT,
   EVENT_ADDED,
   SET_EVENT,
-  SET_USER_EVENTS
+  SET_USER_EVENTS,
+  JOIN_EVENT,
+  LEAVE_EVENT,
+  ALERT_USER,
+  DELETE_ALERT
 } from '../types';
 const initialState = {
   eventAdded: false,
@@ -13,7 +17,9 @@ const initialState = {
   locations: [],
   eventObj: {},
   meetingPoint: {},
-  loading: false
+  loading: false,
+  eventsJoinedInSession: [],
+  alert: {}
 };
 
 export default function(state = initialState, action) {
@@ -23,6 +29,11 @@ export default function(state = initialState, action) {
       return {
         ...state,
         loading: true
+      }
+    case DELETE_ALERT:
+      return {
+        ...state,
+        alert: {}
       }
     case ADD_EVENT:
       return {
@@ -58,6 +69,29 @@ export default function(state = initialState, action) {
         ...state,
         locations: action.payload,
         loading: false
+      }
+    case JOIN_EVENT:
+    state.locations.forEach(event => {
+      if(event.eventId === action.payload) {
+        event.joined=true
+      }
+    })
+      return {
+        ...state
+      }
+    case LEAVE_EVENT:
+      state.locations.forEach(event => {
+        if(event.eventId === action.payload) {
+          event.joined=false
+        }
+      })
+      return {
+        ...state
+      }
+    case ALERT_USER:
+      return {
+        ...state,
+        alert: action.payload
       }
     default:
       return {
