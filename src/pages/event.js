@@ -1,5 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import SmallMap from '../components/Maps/SmallMap'
+import {Link} from 'react-router-dom';
 //mui imports
 import {withStyles} from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -78,54 +80,60 @@ class Event extends React.Component {
     console.log(this.props);
     const {classes, loading, eventObj} = this.props
     const eventDetails = loading ? <CircularProgress size={200} thickness={2} className={classes.progressSpinner}/> : (
-      <div className={classes.eventDetails}>
-        <div className={classes.eventName}>
-          {eventObj.name}
-          <span className={
-          classes.distanceText
-          }>, 3 Kms</span>
-        </div>
-        <div className={classes.eventOrganizer}>
-          created by:
-          <p className={classes.username}>@{eventObj.user}</p>, with love
-          {
-            //<img src={eventObj.userImage} className={classes.userImage}/>
-          }
-        </div>
-        <div className={classes.eventTime}>
-          {new Date(eventObj.startTime).toLocaleString()}
-        </div>
-        <div className={classes.eventDescription}>
-          {eventObj.description}
-        </div>
-        <div className={classes.participants}>
-          <p className={classes.subtitleText}>Gang</p>
-          <Divider/>
-          <div className={classes.participantsImg}>
-          {
-            eventObj.participants && eventObj.participants.map((participant) => {
-              return(
-                <img src={participant.userImage} className={classes.userImage}/>
-              )
-            })
-          }
-        </div>
-        </div>
-        <div className={classes.discussionPanel}>
-          <p className={classes.subtitleText}>Discussions</p>
-          <Divider/>
-        </div>
-      </div>
-    )
-    return (
       <Grid container spacing={6}>
-        <Grid item sm={3}></Grid>
-        <Grid item sm={6}>
-          {eventDetails}
+        <Grid item sm={3} xs={12}>
+          <SmallMap location={eventObj.geoPoint}/>
         </Grid>
-        <Grid item sm={3}></Grid>
+        <Grid item sm={6} xs={12}>
+          <div className={classes.eventDetails}>
+            <div className={classes.eventName}>
+              {eventObj.name}
+              <span className={
+              classes.distanceText
+              }>, 3 Kms</span>
+            </div>
+            <div className={classes.eventOrganizer}>
+              created by:
+              <p className={classes.username}>
+                <Link to={'/profile/'+eventObj.user}>
+                  @{eventObj.user}
+                </Link>
+              </p>, with love
+              {
+                //<img src={eventObj.userImage} className={classes.userImage}/>
+              }
+            </div>
+            <div className={classes.eventTime}>
+              {new Date(eventObj.startTime).toLocaleString()}
+            </div>
+            <div className={classes.eventDescription}>
+              {eventObj.description}
+            </div>
+            <div className={classes.participants}>
+              <p className={classes.subtitleText}>Gang</p>
+              <Divider/>
+              <div className={classes.participantsImg}>
+              {
+                eventObj.participants && eventObj.participants.map((participant) => {
+                  return(
+                    <Link to={'/profile/'+participant.user}>
+                      <img alt={participant.user} title={participant.user} src={participant.userImage} className={classes.userImage}/>
+                    </Link>
+                  )
+                })
+              }
+            </div>
+            </div>
+            <div className={classes.discussionPanel}>
+              <p className={classes.subtitleText}>Discussions</p>
+              <Divider/>
+            </div>
+          </div>
+        </Grid>
+        <Grid item sm={3} xs={12}></Grid>
       </Grid>
     )
+    return <div style={{textAlign: 'center'}}>{eventDetails}</div>;
   }
 }
 

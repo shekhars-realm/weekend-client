@@ -10,12 +10,17 @@ import {
   UNLIKE_SHOUT,
   MARK_NOTIFICATIONS_READ,
   SET_USER_LOCATION,
-  SET_USER_FILTER
+  SET_USER_FILTER,
+  SET_LOADED_USER
 } from '../types';
 
 const initialState = {
     authenticated: false,
     loading: false,
+    sameUserLoaded: false,
+    loadedUser: {
+
+    },
     userLocation: {
 
     },
@@ -46,7 +51,6 @@ const createSchedule = (date, schedule) => {
     let events = [];
     if(schedule) {
       schedule.forEach(event => {
-        console.log(new Date(event.startTime).getTime(), elem);
         if(new Date(event.startTime).getTime() >= elem && new Date(event.startTime).getTime() < elem+86400000) {
           events.push(event)
         }
@@ -70,12 +74,21 @@ export default function(state = initialState, action) {
         case SET_UNAUTHENTICATED:
             return initialState;
         case SET_USER:
-          action.payload.schedule = createSchedule(new Date(), action.payload.schedule)
             return {
+              ...state,
+              sameUserLoaded: action.payload.handle === state.loadedUser.handle ? true : false,
                 authenticated: true,
                 loading: false,
                 credentials: action.payload
             };
+        case SET_LOADED_USER:
+          action.payload.schedule = createSchedule(new Date(), action.payload.schedule)
+          return {
+            ...state,
+            sameUserLoaded: action.payload.handle === state.credentials.handle ? true : false,
+            loading: false,
+            loadedUser: action.payload
+          }
         case SET_USER_FILTER:
           return {
             ...state,

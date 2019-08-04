@@ -19,7 +19,7 @@ import ChatIcon from '@material-ui/icons/Chat';
 
 class Navbar extends Component {
   render() {
-    const {authenticated, imageUrl, loadingUser} = this.props;
+    const {authenticated, imageUrl, loadingUser, handle} = this.props;
     const profile = loadingUser ? <AccountCircle style={{fontSize: 60}}/> : <img src={imageUrl} className='userImageNav'/>
     return (
       <AppBar className="appBar">
@@ -38,10 +38,7 @@ class Navbar extends Component {
                     <ChatIcon/>
                   </MyButton>
                 </Link>
-                <MyButton tip='Logout' onClick={this.props.logoutUser}>
-                  Logout
-                </MyButton>
-                <Link to='/profile'>
+                <Link to={'/profile/'+handle}>
                   <div className="userProfileBtn">
                     {profile}
                   </div>
@@ -65,13 +62,15 @@ Navbar.propTypes = {
   authenticated: PropTypes.bool.isRequired,
   loading: PropTypes.bool.isRequired,
   imageUrl: PropTypes.string.isRequired,
-  logoutUser: PropTypes.func.isRequired
+  logoutUser: PropTypes.func.isRequired,
+  handle: PropTypes.string.isRequired
 }
 
 const mapStateToProps = (state) => ({
   authenticated: state.user.authenticated,
   imageUrl: state.user.credentials.imageUrl,
-  loadingUser: state.user.loading
+  loadingUser: state.user.loading,
+  handle: state.user.credentials.handle
 })
 
 export default connect(mapStateToProps, {logoutUser})(Navbar);

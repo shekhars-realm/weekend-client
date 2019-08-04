@@ -6,7 +6,8 @@ import {
   SET_UNAUTHENTICATED,
   LOADING_USER,
   SET_USER_LOCATION,
-  SET_USER_FILTER
+  SET_USER_FILTER,
+  SET_LOADED_USER
 } from '../types';import axios from 'axios';
 
 export const loginUser = (userData, history) => (dispatch) => {
@@ -45,12 +46,25 @@ export const signUpUser = (newUserData, history) => (dispatch) => {
       });
 }
 
-export const logoutUser = () => (dispatch) => {
+export const logoutUser = (history) => (dispatch) => {
   localStorage.removeItem('FBIdToken');
   delete axios.defaults.headers.common['Authorization'];
   dispatch({
     type: SET_UNAUTHENTICATED
   })
+  history.push('/login')
+}
+
+export const getLoadedUser = (handle) => (dispatch) => {
+  dispatch({type: LOADING_USER});
+    axios.get(`/user/${handle}`).then((res) => {
+        dispatch({
+            type: SET_LOADED_USER,
+            payload: res.data.credentials
+        });
+    }).catch((err) => {
+        console.log(err);
+    })
 }
 
 export const getUserData = () => (dispatch) => {

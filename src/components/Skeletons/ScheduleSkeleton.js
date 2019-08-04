@@ -39,6 +39,11 @@ const styles = theme => ({
   weekDay: {
     fontSize: 25,
     width: 100
+  },
+  heading: {
+    fontSize: 30,
+    textAlign: 'center',
+    fontWeight: 700
   }
 })
 
@@ -49,8 +54,10 @@ class ScheduleSkeleton extends React.Component {
 
     return (
       <Paper className={classes.root}>
+        <div className={classes.heading}>
+          &#9646;&#9646;&#9646;&#9646;&#9646;&#9646;
+        </div>
         <Table className={classes.table}>
-
           <TableBody>
             <TableRow key={0}>
               <TableCell className={classes.weekDay} component= "th" scope="row">

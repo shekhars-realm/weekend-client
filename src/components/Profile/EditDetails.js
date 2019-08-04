@@ -81,7 +81,7 @@ class EditDetails extends Component {
     return (
       <Fragment>
         <MyButton tip='Edit Profile' onClick={this.handleOpen} btnClassName={classes.button}>
-          <EditIcon color='primary'/>
+          <Button variant='contained' color='primary'>Edit</Button>
         </MyButton>
         <Dialog
           open = {this.state.open}

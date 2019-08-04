@@ -26,6 +26,32 @@ class EventCard extends React.Component {
     const {classes} = this.props;
     return (
       <Fragment>
+        <div style={{
+          fontSize: 30,
+          textAlign: 'center',
+          fontWeight: 700
+          }}>
+          &#9646;&#9646;&#9646;&#9646;&#9646;&#9646;
+        </div>
+      <div class="wrapper">
+        <a href="#" class="meetupSKL"/>
+        <h3 class="groupSKL"/>
+        <h3 class="groupSKL"/>
+        <p class="details">
+          <span class="row">
+            <i class="material-icons md-36 icon"><CloclkIcon/></i>
+            <span class="row-item">
+            <strong>Time</strong>
+            </span>
+          </span>
+          <span class="row">
+            <i class="material-icons md-36 icon"><LocationOn/></i>
+            <span class="row-item">
+            <strong>Distance</strong>
+            </span>
+          </span>
+        </p>
+      </div>
       <div class="wrapper">
         <a href="#" class="meetupSKL"/>
         <h3 class="groupSKL"/>

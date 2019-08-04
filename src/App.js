@@ -62,7 +62,6 @@ function App() {
               <AuthRoute exact path='/signup' component={signup}/>
               <Route exact path='/chat' component={chat}/>
               <Route exact path='/event/:eventId' component={event}/>
-              <AuthRoute exact path="/profile" component={profile} />
               <Route exact path="/profile/:handle" component={profile}/>
             </Switch>
           </div>

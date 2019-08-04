@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import $ from 'jquery';
 import PropTypes from 'prop-types';
 import '../../utils/EventCard.css'
+import {Link} from 'react-router-dom';
 //mui imports
 import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
@@ -26,7 +27,9 @@ class EventCard extends React.Component {
     const {classes, event} = this.props;
     return (
       <div class="wrapper">
-        <a href="#" class="meetup">{event.name}</a>
+        <Link to={'/event/'+event.eventId}>
+          <p href="#" class="meetup">{event.name}</p>
+        </Link>
         <h3 class="group">{event.description}</h3>
         <p class="details">
           <span class="row">

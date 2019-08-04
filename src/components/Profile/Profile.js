@@ -15,7 +15,7 @@ import IconButton from '@material-ui/core/IconButton';
 import ToolTip from '@material-ui/core/Tooltip'
 //redux imports
 import {connect} from 'react-redux';
-import {logoutUser, uploadImage} from '../../redux/actions/userActions';
+import {logoutUser, uploadImage, getLoadedUser} from '../../redux/actions/userActions';
 //import icons
 import LocationOn from '@material-ui/icons/LocationOn';
 import LinkIcon from '@material-ui/icons/Link';
@@ -73,11 +73,39 @@ const styles = theme => ({
 
 class Profile extends React.Component {
 
+  constructor(props) {
+    super(props)
+    this.state= {
+      handle: this.props.handle,
+      authenticatedUser: false
+    }
+  }
+
   handleImageChange = (event) => {
     const img = event.target.files[0];
     const formData = new FormData();
     formData.append('image', img, img.name);
     this.props.uploadImage(formData);
+  }
+
+  componentDidMount() {
+    this.props.getLoadedUser(this.props.handle)
+  }
+
+  componentDidUpdate(prevProp, prevState) {
+    if(this.props.handle!==prevProp.handle) {
+      console.log(this.props.user.credentials.handle, this.props.user.loadedUser.handle);
+      this.props.getLoadedUser(this.props.handle)
+      if(this.props.user.credentials.handle === this.props.user.loadedUser.handle) {
+        this.setState({
+          authenticatedUser: true
+        })
+      } else {
+        this.setState({
+          authenticatedUser: false
+        })
+      }
+    }
   }
 
   handleEditPicture = () => {
@@ -86,61 +114,71 @@ class Profile extends React.Component {
   }
 
   handleLogout = () => {
-    this.props.logoutUser()
+    this.props.logoutUser(this.props.history)
   }
 
   render () {
+    console.log(this.state.authenticatedUser)
     const {classes, user: {
-      credentials: {handle, imageUrl, bio, website, location, createdAt},
+      credentials,
       loading,
-      authenticated
+      authenticated,
+      loadedUser,
+      sameUserLoaded
     }} = this.props;
+    const {authenticatedUser} = this.state;
     let profilemarkUp  = !loading ? (
       <Paper className={classes.paper}>
         <div className={classes.profile}>
           <div className="image-wrapper">
-            <img src={imageUrl} alt="profile" className='profile-image'/>
-            <input hidden='hidden' type='file' id='userImage' onChange={this.handleImageChange}/>
-            <MyButton tip='Edit Profile Image' onClick={this.handleEditPicture} btnClassName={classes.buttons}>
-              <EditIcon color='primary'/>
-            </MyButton>
+            <img src={loadedUser.imageUrl} alt="profile" className='profile-image'/>
+            {
+              sameUserLoaded ? <input hidden='hidden' type='file' id='userImage' onChange={this.handleImageChange}/> : null
+            }
+            {
+              sameUserLoaded ? <MyButton tip='Edit Profile Image' onClick={this.handleEditPicture} btnClassName={classes.buttons}>
+                <EditIcon color='primary'/>
+              </MyButton> : null
+            }
           </div>
           <hr/>
           <div className="profile-details">
-            <MuiLink component={Link} to={`/users/${handle}`} color='primary' variant='h5'>
-              @{handle}
-            </MuiLink>
+              @{loadedUser.handle}
             <hr/>
             {
-              bio && <Typography variant='body2'>{bio}</Typography>
+              loadedUser.bio && <Typography variant='body2'>{loadedUser.bio}</Typography>
             }
             <hr/>
             {
-              location && (
+              loadedUser.location && (
                 <Fragment>
-                  <LocationOn color='primary'/><span>{location}</span>
+                  <LocationOn color='primary'/><span>{loadedUser.location}</span>
                   <hr/>
                 </Fragment>
               )
             }
             {
-              website && (
+              loadedUser.website && (
                 <Fragment>
                   <LinkIcon color='primary'/>
-                  <a href={website} target='_blank' rel='noopener noreferrer'>
-                    {' '}{website}
+                  <a href={loadedUser.website} target='_blank' rel='noopener noreferrer'>
+                    {' '}{loadedUser.website}
                   </a>
                   <hr/>
                 </Fragment>
               )
             }
             <CalendarToday colr='primary'/>{' '}
-            <span>Joined {dayjs(createdAt).format('MM YYYY')}</span>
+            <span>Joined {dayjs(loadedUser.createdAt).format('MM YYYY')}</span>
           </div>
-          <MyButton tip='logout' onClick={this.handleLogout}>
-            <KeyboardReturn color='primary'/>
-          </MyButton>
-          <EditDetails/>
+          {
+            sameUserLoaded ? <MyButton tip='logout' onClick={this.handleLogout}>
+              <Button variant='contained' color='primary'>Logout</Button>
+            </MyButton> : null
+          }
+          {
+            sameUserLoaded ? <EditDetails/> : null
+          }
         </div>
       </Paper>
     ) : <ProfileSkeleton />
@@ -153,7 +191,7 @@ const mapStateToProps = (state) =>({
   user: state.user
 });
 
-const mapActionsToProps = {logoutUser, uploadImage};
+const mapActionsToProps = {logoutUser, uploadImage, getLoadedUser};
 
 Profile.propTypes = {
   user: PropTypes.object.isRequired,

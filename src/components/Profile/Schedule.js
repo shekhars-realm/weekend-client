@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
-import ScheduleSkeleton from './ScheduleSkeleton'
+import ScheduleSkeleton from '../Skeletons/ScheduleSkeleton'
 //mui imports
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -41,11 +41,18 @@ const styles = theme => ({
   },
   eventTime: {
     fontSize: 22,
-    fontWeight: 700
+    fontWeight: 700,
+    color: 'black'
   },
   weekDay: {
     fontSize: 25,
-    width: 100
+    width: 100,
+    fontWeight: 700
+  },
+  heading: {
+    fontSize: 30,
+    textAlign: 'center',
+    fontWeight: 700
   }
 })
 
@@ -56,13 +63,17 @@ class Schedule extends React.Component {
   }
 
   render() {
-    const {classes, loading, schedule} = this.props;
+    const {classes, loading, sameUserLoaded, loadedUser: {handle,schedule}} = this.props;
     const plan = !loading ? <Paper className={classes.root}>
+      <div className={classes.heading}>
+        {
+          sameUserLoaded ? "Your schedule" : handle+"'s schedule"
+        }
+      </div>
       <Table className={classes.table}>
-
         <TableBody>
           {
-            schedule.map((row, index) => (
+            schedule && schedule.map((row, index) => (
               <TableRow key={index}>
                 <TableCell className={classes.weekDay} component= "th" scope="row">
                   {moment(new Date(row.weekDay)).format('dddd')}
@@ -73,22 +84,26 @@ class Schedule extends React.Component {
                     row.events.length !== 0 ? (
                       row.events.map((event) => {
                         return(
-                          <div className={classes.eventCell}>
-                            <div className={classes.eventName}>
-                              {event.name}
+                          <Link to={'/event/' + event.eventId}>
+                            <div className={classes.eventCell}>
+                              <div className={classes.eventName}>
+                                {event.name}
+                              </div>
+                              <div className={classes.eventTime}>
+                              {moment(new Date(event.startTime)).format('LT') + ' - ' + moment(new Date(event.endTime)).format('LT')}
+                              </div>
                             </div>
-                            <div className={classes.eventTime}>
-                            {moment(new Date(event.startTime)).format('LT') + ' - ' + moment(new Date(event.endTime)).format('LT')}
-                            </div>
-                          </div>
+                          </Link>
                         )
                       })
                     ) : (
-                      <Link to='/'>
+                      sameUserLoaded ? <Link to='/'>
                         <Button variant='contained' color='secondary'>
                           {'Search for events'}
                         </Button>
-                      </Link>
+                      </Link> : <Button disabled={true} variant='contained' color='secondary'>
+                        {'Quite busy!'}
+                      </Button>
                     )
                   }
                   </div>
@@ -107,12 +122,14 @@ class Schedule extends React.Component {
 Schedule.propTypes = {
   classes: PropTypes.object.isRequired,
   loading: PropTypes.bool.isRequired,
+  sameUserLoaded: PropTypes.bool.isRequired,
   schedule: PropTypes.array.isRequired
 }
 
 const mapStateToProps = (state) => ({
   loading: state.user.loading,
-  schedule: state.user.credentials.schedule
+  loadedUser: state.user.loadedUser,
+  sameUserLoaded: state.user.sameUserLoaded
 })
 
 export default connect(mapStateToProps)(withStyles(styles)(Schedule))
