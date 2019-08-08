@@ -77,6 +77,12 @@ const styles = (theme) => ({
     '-webkit-transition': '0.5s',
     transition: '0.5s',
     margin: 10
+  },
+  addevent: {
+    position: 'absolute',
+    left: '50%',
+    border: '3px solid white',
+    padding: 5
   }
 });
 
@@ -167,7 +173,7 @@ class AddEvent extends Component {
     return (
       <Fragment>
         <MyButton tip='Add Event' onClick={this.handleOpen}>
-          <AddIcon color='primary'/>
+          <AddIcon btnClassName={classes.addevent} color='primary'/>
         </MyButton>
         <Dialog
           open={this.state.open}

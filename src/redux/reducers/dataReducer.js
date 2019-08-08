@@ -16,10 +16,16 @@ const initialState = {
   events: [],
   locations: [],
   eventObj: {},
+  eventJoined: false,
+  eventParticipants: [],
   meetingPoint: {},
   loading: false,
   eventsJoinedInSession: [],
-  alert: {}
+  alert: '',
+  forums: [],
+  replies: [],
+  loadingforums: false,
+  loadingReplies: false
 };
 
 export default function(state = initialState, action) {
@@ -33,7 +39,7 @@ export default function(state = initialState, action) {
     case DELETE_ALERT:
       return {
         ...state,
-        alert: {}
+        alert: ''
       }
     case ADD_EVENT:
       return {
@@ -50,6 +56,8 @@ export default function(state = initialState, action) {
         events: action.payload
       }
     case SET_EVENT:
+      state.eventJoined = action.payload.joined
+      state.eventParticipants = action.payload.participants
       return {
         ...state,
         eventObj: action.payload
@@ -71,20 +79,19 @@ export default function(state = initialState, action) {
         loading: false
       }
     case JOIN_EVENT:
-    state.locations.forEach(event => {
-      if(event.eventId === action.payload) {
-        event.joined=true
-      }
-    })
+      state.eventJoined = true
+      state.eventObj.joined = true
       return {
-        ...state
+        ...state,
+        eventParticipants: [action.payload, ...state.eventParticipants]
       }
     case LEAVE_EVENT:
-      state.locations.forEach(event => {
-        if(event.eventId === action.payload) {
-          event.joined=false
-        }
+      let i = state.eventParticipants.findIndex(participant => {
+        return participant.user === action.payload.user
       })
+      state.eventParticipants.splice(i, 1)
+      state.eventJoined = false
+      state.eventObj.joined = false
       return {
         ...state
       }

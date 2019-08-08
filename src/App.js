@@ -29,7 +29,7 @@ console.log(process.env);
 
 const theme = createMuiTheme(themeFile);
 
-axios.defaults.baseURL = 'https://europe-west2-weekend-62173.cloudfunctions.net/api';
+axios.defaults.baseURL = 'http://localhost:5000/weekend-62173/us-central1/api';
 
 const token = localStorage.FBIdToken;
 if(token) {
@@ -51,7 +51,6 @@ const mapAPI = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_
 function App() {
   return (
     <MuiThemeProvider theme={theme}>
-      <script src={mapAPI}></script>
       <Provider store={store}>
         <Router>
           <Navbar/>
@@ -61,8 +60,8 @@ function App() {
               <AuthRoute exact path='/login' component={login}/>
               <AuthRoute exact path='/signup' component={signup}/>
               <Route exact path='/chat' component={chat}/>
-              <Route exact path='/event/:eventId' component={event}/>
-              <Route exact path="/profile/:handle" component={profile}/>
+              <AuthRoute exact path='/event/:eventId' component={event}/>
+              <AuthRoute exact path="/profile/:handle" component={profile}/>
             </Switch>
           </div>
         </Router>

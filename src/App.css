@@ -13,6 +13,7 @@ body {
 }
 .nav-container {
   margin: auto;
+  width: 95%;
 }
 .appBar{
 
@@ -28,10 +29,27 @@ a{
   text-align: center;
   margin: 10px;
 }
+.addEventBtn {
+  position: absolute;
+  left: 50%;
+  border: 3px solid white;
+  border-radius: 5px;
+}
 
 .userImageNav {
   height: 50px;
   object-fit: cover;
   width: 50px;
   border-radius: 50%;
+}
+.homeButton {
+  font-family: Righteous;
+  font-size: 50px;
+  padding: 5px;
+  color: white;
+  text-shadow: 4px 4px black;
+}
+.userProfileBtn {
+  position: absolute;
+  right: 0;
 }

@@ -26,3 +26,14 @@ export const JOIN_EVENT = 'JOIN_EVENT';
 export const LEAVE_EVENT = 'LEAVE_EVENT';
 export const ALERT_USER = 'ALERT_USER';
 export const DELETE_ALERT = 'DELETE_ALERT';
+//forum reducer types
+export const LOADING_FORUMS = 'LOADING_FORUMS';
+export const LOADING_FORUM = 'LOADING_FORUM';
+export const SET_FORUMS = 'SET_FORUMS';
+export const ADD_FORUM = 'ADD_FORUM';
+export const DELETE_FORUM = 'DELETE_FORUM';
+export const LOADING_REPLIES = 'LOADING_REPLIES';
+export const SET_REPLIES = 'SET_REPLIES';
+export const ADD_REPLY = 'ADD_REPLY';
+export const DELETE_REPLY = 'DELETE_REPLY';
+export const SET_FORUM = 'SET_FORUM';

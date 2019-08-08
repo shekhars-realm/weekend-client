@@ -17,8 +17,9 @@ import {
   DELETE_ALERT,
   JOIN_EVENT,
   LEAVE_EVENT,
-  ALERT_USER
+  ALERT_USER,
 } from '../types';
+import store from '../store';
 import axios from 'axios';
 import {setAuthorizationHeader, setUserLocation} from './userActions'
 
@@ -79,29 +80,27 @@ export const addEvent = (event) => (dispatch) => {
 export const joinEvent = (eventId) => (dispatch) => {
   dispatch({
     type: JOIN_EVENT,
-    payload: eventId
+    payload: {
+      user: store.getState().user.credentials.handle,
+      userImage: store.getState().user.credentials.imageUrl
+    }
   })
   axios.get(`/event/${eventId}/join`).then((res) => {
     dispatch({
       type: ALERT_USER,
-      payload: {
-        alert_type: 'EVENT_ADDED',
-        message: 'Event has been added',
-        variant: 'success'
-      }
+      payload: 'Event has been added to your schedule'
     })
   }).catch((err) => {
     dispatch({
       type: LEAVE_EVENT,
-      payload: eventId
+      payload: {
+        user: store.getState().user.credentials.handle,
+        userImage: store.getState().user.credentials.imageUrl
+      }
     })
     dispatch({
       type: ALERT_USER,
-      payload: {
-        alert_type: 'EVENT_ADDED_ERROR',
-        message: 'Event cannot be added. Try again later!',
-        variant: 'error'
-      }
+      payload: 'Event cannot be removed. Try again later!'
     })
   })
 }
@@ -115,29 +114,27 @@ export const deleteAlert = () => (dispatch) => {
 export const leaveEvent = (eventId) => (dispatch) => {
   dispatch({
     type: LEAVE_EVENT,
-    payload: eventId
+    payload: {
+      user: store.getState().user.credentials.handle,
+      userImage: store.getState().user.credentials.imageUrl
+    }
   })
-  axios.get(`/event/${eventId}/join`).then((res) => {
+  axios.get(`/event/${eventId}/leave`).then((res) => {
     dispatch({
       type: ALERT_USER,
-      payload: {
-        alert_type: 'EVENT_ADDED',
-        message: 'Event has been added',
-        variant: 'success'
-      }
+      payload: 'Event has removed from schedule'
     })
   }).catch((err) => {
     dispatch({
       type: JOIN_EVENT,
-      payload: eventId
+      payload: {
+        user: store.getState().user.credentials.handle,
+        userImage: store.getState().user.credentials.imageUrl
+      }
     })
     dispatch({
       type: ALERT_USER,
-      payload: {
-        alert_type: 'EVENT_REMOVED_ERROR',
-        message: 'Event cannot be removed. Try again later!',
-        variant: 'error'
-      }
+      payload: 'Event cannot be removed. Try again later!'
     })
   })
 }

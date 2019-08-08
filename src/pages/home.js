@@ -57,11 +57,11 @@ class Home extends React.Component {
         </Grid>
         <Grid item sm={1}/>
         <Grid item sm={1}/>
-        <Grid item sm={10}>
+        <Grid item sm={10} xs={12}>
           <Map/>
         </Grid>
         <Grid item sm={1}/>
-        <Grid item sm xs={12} xs>
+        <Grid item sm xs={12}>
           {
             locations.length > 0 ? <EventSlider history={this.props.history}/> : <Typography className='informationText' variant='h5' color='primary'>{'No events found, try switching location, search radius or time.'}</Typography>
           }

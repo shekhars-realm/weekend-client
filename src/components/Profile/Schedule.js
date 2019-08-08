@@ -23,7 +23,7 @@ const styles = theme => ({
     overflowX: 'auto',
   },
   table: {
-    minWidth: 650,
+    minWidth: '100%',
   },
   eventList: {
     display: 'block'

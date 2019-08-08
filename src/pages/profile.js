@@ -27,7 +27,7 @@ function init() {
 
 const styles = theme => ({
   root: {
-    height: '90vh',
+    maxHeight: '87vh',
     overflowX: 'auto',
   },
   heading: {

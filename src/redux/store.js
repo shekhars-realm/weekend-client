@@ -4,6 +4,7 @@ import thunk from 'redux-thunk';
 import userReducer from './reducers/userReducer';
 import dataReducer from './reducers/dataReducer';
 import uiReducer from './reducers/uiReducer';
+import forumReducer from './reducers/forumReducer';
 
 const initialState={
 
@@ -13,7 +14,7 @@ const middleware = [thunk];
 
 const composeEnhancers =
   typeof window === 'object' &&
-  window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?   
+  window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
       // Specify extension’s options like name, actionsBlacklist, actionsCreators, serialize...
     }) : compose;
@@ -26,12 +27,13 @@ const enhancer = composeEnhancers(
 const reducers = combineReducers({
     user: userReducer,
     data: dataReducer,
+    forum: forumReducer,
     UI: uiReducer
 });
 
 const store = createStore(
-    reducers, 
-    initialState, 
+    reducers,
+    initialState,
     enhancer
 );
 

@@ -28,21 +28,16 @@ class Navbar extends Component {
             authenticated ? (
               <Fragment>
                 <Link to='/'>
-                  <MyButton tip='Home'>
-                    <HomeIcon color='primary'/>
-                  </MyButton>
+                  <p class="homeButton">Weekend</p>
                 </Link>
-                <AddEvent/>
-                <Link to='/chat'>
-                  <MyButton tip='Chat'>
-                    <ChatIcon/>
-                  </MyButton>
-                </Link>
-                <Link to={'/profile/'+handle}>
-                  <div className="userProfileBtn">
+                <div class='addEventBtn'>
+                  <AddEvent/>
+                </div>
+                <div className="userProfileBtn">
+                  <Link to={'/profile/'+handle}>
                     {profile}
-                  </div>
-                </Link>
+                  </Link>
+                </div>
               </Fragment>
             ) : (
               <Fragment>

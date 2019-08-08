@@ -188,6 +188,14 @@ class EventSlider extends React.Component {
     }
   }
 
+  eventInfo = (eventId, authenticated) => {
+    if(authenticated) {
+      this.props.history.push(`/event/${eventId}`)
+    } else {
+      this.props.history.push('/login')
+    }
+  }
+
   handleCloseAlert = () => {
     this.props.deleteAlert();
   }
@@ -206,7 +214,7 @@ class EventSlider extends React.Component {
                   return <div class="slide">
                     <EventCard event={event}/>
                     <button
-                      onClick={() => {this.props.history.push(`/event/${event.eventId}`)}} variant="contained"
+                      onClick={() => {this.eventInfo(event.eventId, authenticated)}} variant="contained"
                       class="actionBtn infoBtn"
                     >
                       Info

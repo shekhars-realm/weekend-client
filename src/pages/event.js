@@ -2,15 +2,20 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import SmallMap from '../components/Maps/SmallMap'
 import {Link} from 'react-router-dom';
+import Post from '../components/Forum/Post'
+import List from '../components/Forum/List'
 //mui imports
+import Snackbar from '@material-ui/core/Snackbar';
 import {withStyles} from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
+import Slide from '@material-ui/core/Slide';
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Divider from '@material-ui/core/Divider';
 //redux imports
 import {connect} from 'react-redux';
-import {getEvent} from '../redux/actions/dataActions'
+import {getEvent, joinEvent, leaveEvent, deleteAlert} from '../redux/actions/dataActions'
 
 const styles = (theme) => ({
   progressSpinner: {
@@ -63,22 +68,40 @@ const styles = (theme) => ({
   },
   participants: {
     marginTop: 30
+  },
+  actionButton: {
+    width: '30%',
+    marginTop: 30
   }
 })
 
+function SlideTransition(props) {
+  return <Slide {...props} direction="up" />;
+}
+
 class Event extends React.Component {
+
+  constructor(props) {
+    super(props)
+    this.state={
+      alert:{},
+      locations: this.props.locations,
+      updateEvents: false
+    }
+  }
+
+  handleCloseAlert = () => {
+    this.setState({alert: {}})
+  }
 
   componentDidMount = () => {
     this.props.getEvent(this.props.match.params.eventId);
   }
 
-  componentDidUpdate(prevProp, prevState) {
-    console.log(this.props);
-  }
 
   render () {
     console.log(this.props);
-    const {classes, loading, eventObj} = this.props
+    const {classes, loading, eventObj, handle, eventJoined, alert, eventParticipants} = this.props
     const eventDetails = loading ? <CircularProgress size={200} thickness={2} className={classes.progressSpinner}/> : (
       <Grid container spacing={6}>
         <Grid item sm={3} xs={12}>
@@ -98,7 +121,7 @@ class Event extends React.Component {
                 <Link to={'/profile/'+eventObj.user}>
                   @{eventObj.user}
                 </Link>
-              </p>, with love
+              </p>
               {
                 //<img src={eventObj.userImage} className={classes.userImage}/>
               }
@@ -109,12 +132,20 @@ class Event extends React.Component {
             <div className={classes.eventDescription}>
               {eventObj.description}
             </div>
+            {
+              eventObj.user === handle ? (
+                <Button className={classes.actionButton} variant='contained' color='primary'>Delete</Button>
+              ) : (
+                eventJoined ? <Button className={classes.actionButton} variant='contained' color='primary' onClick={() => {this.props.leaveEvent(eventObj.eventId)}}>Leave</Button> :
+                <Button className={classes.actionButton} variant='contained' color='secondary' onClick={() => {this.props.joinEvent(eventObj.eventId)}}>Join</Button>
+              )
+            }
             <div className={classes.participants}>
-              <p className={classes.subtitleText}>Gang</p>
+              <p className={classes.subtitleText}>Members</p>
               <Divider/>
               <div className={classes.participantsImg}>
               {
-                eventObj.participants && eventObj.participants.map((participant) => {
+                eventParticipants && eventParticipants.map((participant) => {
                   return(
                     <Link to={'/profile/'+participant.user}>
                       <img alt={participant.user} title={participant.user} src={participant.userImage} className={classes.userImage}/>
@@ -125,12 +156,24 @@ class Event extends React.Component {
             </div>
             </div>
             <div className={classes.discussionPanel}>
-              <p className={classes.subtitleText}>Discussions</p>
+              <p className={classes.subtitleText}>Forum</p>
               <Divider/>
+              <Post eventId={eventObj.eventId}/>
+              <List/>
             </div>
           </div>
         </Grid>
         <Grid item sm={3} xs={12}></Grid>
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          open={alert !== ''}
+          autoHideDuration={2000}
+          onClose={this.props.deleteAlert}
+          ContentProps={{
+            'aria-describedby': 'message-id',
+          }}
+          message={<span id="message-id">{alert}</span>}
+        />
       </Grid>
     )
     return <div style={{textAlign: 'center'}}>{eventDetails}</div>;
@@ -139,14 +182,25 @@ class Event extends React.Component {
 
 Event.propTypes = {
   classes: PropTypes.object.isRequired,
+  handle: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
   event: PropTypes.object.isRequired,
-  getEvent: PropTypes.func.isRequired
+  getEvent: PropTypes.func.isRequired,
+  alert: PropTypes.string.isRequired,
+  joinEvent: PropTypes.func.isRequired,
+  leaveEvent: PropTypes.func.isRequired,
+  eventJoined: PropTypes.bool.isRequired,
+  deleteAlert: PropTypes.func.isRequired,
+  eventParticipants: PropTypes.array.isRequired
 }
 
 const mapStateToProps = (state) => ({
   loading: state.UI.loading,
-  eventObj: state.data.eventObj
+  eventObj: state.data.eventObj,
+  alert: state.data.alert,
+  handle: state.user.credentials.handle,
+  eventJoined: state.data.eventJoined,
+  eventParticipants: state.data.eventParticipants
 })
 
-export default connect(mapStateToProps, {getEvent})(withStyles(styles)(Event));
+export default connect(mapStateToProps, {getEvent, leaveEvent, joinEvent, deleteAlert})(withStyles(styles)(Event));
