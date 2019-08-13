@@ -68,6 +68,12 @@ const styles = theme => ({
    '& a': {
      margin: '20px 10px'
    }
+ },
+ userBio: {
+   width: '100%',
+   background: theme.palette.primary.main,
+   borderRadius: 5,
+   color: 'white'
  }
 });
 
@@ -143,16 +149,16 @@ class Profile extends React.Component {
           </div>
           <hr/>
           <div className="profile-details">
-              @{loadedUser.handle}
+              <Typography variant='h5'>@{loadedUser.handle}</Typography>
             <hr/>
             {
-              loadedUser.bio && <Typography variant='body2'>{loadedUser.bio}</Typography>
+              loadedUser.bio && <Typography className={classes.userBio} variant='h6'>{loadedUser.bio}</Typography>
             }
             <hr/>
             {
               loadedUser.location && (
                 <Fragment>
-                  <LocationOn color='primary'/><span>{loadedUser.location}</span>
+                  <LocationOn color='primary'/><Typography variant='h6'>{loadedUser.location}</Typography>
                   <hr/>
                 </Fragment>
               )

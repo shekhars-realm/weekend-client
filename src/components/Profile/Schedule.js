@@ -32,7 +32,8 @@ const styles = theme => ({
     background: theme.palette.primary.main,
     borderRadius: 5,
     marginBottom: 10,
-    padding: 10
+    padding: 10,
+    textAlign: 'center'
   },
   eventName: {
     color: 'white',
@@ -98,10 +99,10 @@ class Schedule extends React.Component {
                       })
                     ) : (
                       sameUserLoaded ? <Link to='/'>
-                        <Button variant='contained' color='secondary'>
+                        <Button fullWidth variant='contained' color='secondary'>
                           {'Search for events'}
                         </Button>
-                      </Link> : <Button disabled={true} variant='contained' color='secondary'>
+                      </Link> : <Button fullWidth disabled={true} variant='contained' color='secondary'>
                         {'Quite busy!'}
                       </Button>
                     )

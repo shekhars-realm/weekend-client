@@ -8,10 +8,10 @@ import {
   LOADING_USER,
   LIKE_SHOUT,
   UNLIKE_SHOUT,
-  MARK_NOTIFICATIONS_READ,
   SET_USER_LOCATION,
   SET_USER_FILTER,
-  SET_LOADED_USER
+  SET_LOADED_USER,
+  MARK_NOTIFICATIONS_READ
 } from '../types';
 
 const initialState = {
@@ -27,6 +27,7 @@ const initialState = {
     credentials: {
 
     },
+    notifications: [],
     filter: {}
 };
 
@@ -41,7 +42,7 @@ const startOfWeek = (date) => {
   date.setMinutes(0);
   date.setSeconds(0)
   date = new Date(date).getTime();
-  return [date, date+86400000, date+(86400000*2), date+(86400000*3), date+(86400000*4), date+(86400000*5)]
+  return [date, date+86400000, date+(86400000*2), date+(86400000*3), date+(86400000*4), date+(86400000*5), date+(86400000*6)]
 }
 
 const createSchedule = (date, schedule) => {
@@ -76,10 +77,11 @@ export default function(state = initialState, action) {
         case SET_USER:
             return {
               ...state,
-              sameUserLoaded: action.payload.handle === state.loadedUser.handle ? true : false,
-                authenticated: true,
-                loading: false,
-                credentials: action.payload
+              sameUserLoaded: action.payload.credentials.handle === state.loadedUser.handle ? true : false,
+              authenticated: true,
+              loading: false,
+              credentials: action.payload.credentials,
+              notifications: action.payload.notifications
             };
         case SET_LOADED_USER:
           action.payload.schedule = createSchedule(new Date(), action.payload.schedule)

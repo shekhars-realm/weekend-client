@@ -5,6 +5,7 @@ import MyButton from '../../utils/MyButton';
 import dayjs from 'dayjs';
 import {Link} from 'react-router-dom';
 import Replies from './Replies';
+import ReplyForm from './ReplyForm';
 //Muiimports
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -114,6 +115,7 @@ class FormDialog extends React.Component {
         </Grid>
         <p className={classes.repliesText}>Replies</p>
         <hr className={classes.visibleSeparator}/>
+        <ReplyForm forumId={forum.forumId}/>
         {forum.replies && <Replies replies={forum.replies}/>}
       </Grid>
     )

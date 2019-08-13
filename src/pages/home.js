@@ -50,14 +50,14 @@ class Home extends React.Component {
   render() {
     const {locations} = this.props.data
     return (
-      <Grid container spacing={6}>
+      <Grid container spacing={0}>
         <Grid item sm={1}/>
-        <Grid item sm={10} xs>
+        <Grid style={{padding: '5px 0px 0px 0px'}} item sm={10} xs>
           <FilterBar/>
         </Grid>
         <Grid item sm={1}/>
         <Grid item sm={1}/>
-        <Grid item sm={10} xs={12}>
+        <Grid style={{padding: 0}} item sm={10} xs={12}>
           <Map/>
         </Grid>
         <Grid item sm={1}/>

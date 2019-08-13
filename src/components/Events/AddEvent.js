@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import withStyles from '@material-ui/core/styles/withStyles';
 import MyButton from '../../utils/MyButton';
 import TagSuggestions from  '../../utils/TagSuggestions'
+import {Redirect} from 'react-router-dom';
 //Muiimports
 import 'date-fns';
 import CheckedIconOutlined from '@material-ui/icons/CheckCircleOutline';
@@ -100,7 +101,8 @@ class AddEvent extends Component {
       displayLocation: '',
       location: {},
       headCount: 0,
-      errors: {}
+      errors: {},
+      redirectToLogin: false
     }
     this.getUserLocation = this.getUserLocation.bind(this)
   }
@@ -125,7 +127,11 @@ class AddEvent extends Component {
     }
   }
   handleOpen = () => {
-    this.setState({open: true})
+    if(this.props.authenticated) {
+      this.setState({open: true})
+    } else {
+      this.setState({redirectToLogin: true})
+    }
   }
   handleClose = () => {
     this.props.clearErrors();
@@ -169,6 +175,9 @@ class AddEvent extends Component {
     this.setState({tags})
   }
   render () {
+    if(this.state.redirectToLogin) {
+      return <Redirect to='login'/>
+    }
     const {classes, UI: {loading}, userLocation} = this.props;
     return (
       <Fragment>
@@ -312,12 +321,14 @@ AddEvent.propTypes = {
   addEvent: PropTypes.func.isRequired,
   clearErrors: PropTypes.func.isRequired,
   UI: PropTypes.object.isRequired,
-  userLocation: PropTypes.object.isRequired
+  userLocation: PropTypes.object.isRequired,
+  authenticated: PropTypes.bool.isRequired
 }
 
 const mapStateToProps = (state) => ({
   UI: state.UI,
-  userLocation: state.user.userLocation
+  userLocation: state.user.userLocation,
+  authenticated: state.user.authenticated
 })
 
 export default connect(mapStateToProps, {addEvent, clearErrors, verifyLocation})(withStyles(styles)(AddEvent));

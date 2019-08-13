@@ -4,6 +4,7 @@ import '../../App.css'
 import PropTypes from 'prop-types';
 import MyButton from '../../utils/MyButton';
 import AddEvent from '../Events/AddEvent';
+import Notifications from './Notifications';
 //redux Imports
 import {connect} from 'react-redux';
 import {logoutUser} from '../../redux/actions/userActions';
@@ -31,8 +32,9 @@ class Navbar extends Component {
                   <p class="homeButton">Weekend</p>
                 </Link>
                 <div class='addEventBtn'>
-                  <AddEvent/>
+                  <AddEvent history={this.props.history}/>
                 </div>
+                <Notifications />
                 <div className="userProfileBtn">
                   <Link to={'/profile/'+handle}>
                     {profile}
@@ -41,9 +43,15 @@ class Navbar extends Component {
               </Fragment>
             ) : (
               <Fragment>
-                <Button color='inherit' component={Link} to='/'>Home</Button>
-                <Button color='inherit' component={Link} to='/login'>Login</Button>
-                <Button color='inherit' component={Link} to='/signup'>Signup</Button>
+                <Link to='/'>
+                  <p class="homeButton">Weekend</p>
+                </Link>
+                <div class='addEventBtn'>
+                  <AddEvent/>
+                </div>
+                <div className="userProfileBtn">
+                  <Button color='inherit' component={Link} to='/login'>Login</Button>
+                </div>
               </Fragment>
             )
           }

@@ -4,6 +4,8 @@ import {Link} from 'react-router-dom'
 import dayjs from 'dayjs';
 import ForumDialog from './ForumDialog'
 import MyButton from '../../utils/MyButton'
+import ReplyForm from './ReplyForm';
+import axios from 'axios';
 //mui imports
 import {withStyles} from '@material-ui/core/styles';
 import Send from '@material-ui/icons/Send';
@@ -69,32 +71,17 @@ class ForumList extends React.Component {
 
   state={
     errors: {},
-    reply: ''
+    reply: '',
+    forums: []
   }
 
   componentDidMount() {
     this.props.getForums()
   }
 
-  handleChange = (event) => {
-    this.setState({
-      [event.target.name]: event.target.value
-    })
-  }
-
-  handleSubmit = () => {
-    if(this.state.reply === '') {
-      const errors={
-        reply: 'cannot be epmty!'
-      }
-      this.setState({errors})
-    } else {
-
-    }
-  }
-
   render () {
-    const {classes, forums} = this.props
+    console.log('in list: ', this.props.forumIdParam);
+    const {classes, forums, loadingForums} = this.props
     return(
       <div className={classes.forumList}>
         {
@@ -107,20 +94,11 @@ class ForumList extends React.Component {
                   <br/>
                   <Typography className={classes.body} variant="body1">{forum.body}</Typography>
                   <br/>
-                  <ForumDialog replyCount={forum.replyCount} forumId={forum.forumId} eventId={this.props.eventId}/>
-                  <form className={classes.replyForm} onSubmit={this.handleSubmit}>
-                    <TextField
-                      name='reply'
-                      type='text'
-                      placeholder={'Reply'}
-                      error={this.state.errors.reply ? true : false}
-                      helperText={this.state.errors.reply}
-                      className={classes.textField}
-                      fullWidth
-                      onChange={this.handleChange}
-                    />
-                    <Button type='submit' color='secondary'><Send/></Button>
-                  </form>
+                  <ForumDialog replyCount={forum.replyCount} forumId={forum.forumId} eventId={this.props.eventId} openDialog={
+                      this.props.forumIdParam !== null && this.props.forumIdParam === forum.forumId ? true
+                      : false
+                    }/>
+                  <ReplyForm forumId={forum.forumId}/>
                 </div>
               </div>
             )
@@ -132,14 +110,14 @@ class ForumList extends React.Component {
 }
 
 ForumList.propTypes = {
-  loadingforums: PropTypes.bool.isRequired,
+  loadingForums: PropTypes.bool.isRequired,
   forums: PropTypes.array.isRequired,
   getForums: PropTypes.func.isRequired,
   eventId: PropTypes.string.isRequired
 }
 
 const mapStateToProps = (state) => ({
-  loadingforums: state.forum.loadingforums,
+  loadingForums: state.forum.loadingForums,
   forums: state.forum.forums,
   eventId: state.data.eventObj.eventId
 })

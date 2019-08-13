@@ -18,7 +18,7 @@ const initialState={
   forums: [],
   replies: [],
   forum: {},
-  loadingforums: false,
+  loadingForums: false,
   loadingReplies: false,
   loadingForum: false
 }
@@ -28,7 +28,7 @@ export default function(state = initialState, action) {
     case LOADING_FORUMS:
       return {
         ...state,
-        loadingforums: true
+        loadingForums: true
       }
     case LOADING_FORUM:
       return {
@@ -38,7 +38,7 @@ export default function(state = initialState, action) {
     case SET_FORUMS:
       return {
         ...state,
-        loadingforums: false,
+        loadingForums: false,
         forums: action.payload
       };
     case ADD_FORUM:

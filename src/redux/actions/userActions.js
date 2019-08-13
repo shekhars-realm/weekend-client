@@ -7,7 +7,8 @@ import {
   LOADING_USER,
   SET_USER_LOCATION,
   SET_USER_FILTER,
-  SET_LOADED_USER
+  SET_LOADED_USER,
+  MARK_NOTIFICATIONS_READ
 } from '../types';import axios from 'axios';
 
 export const loginUser = (userData, history) => (dispatch) => {
@@ -72,7 +73,7 @@ export const getUserData = () => (dispatch) => {
     axios.get('/user').then((res) => {
         dispatch({
             type: SET_USER,
-            payload: res.data.credentials
+            payload: res.data
         });
     }).catch((err) => {
         console.log(err);
@@ -105,6 +106,17 @@ export const editUserDetails = (userDetails) => (dispatch) => {
     console.log(err);
   })
 }
+
+export const markNotificationsRead = (notificationIds) => (dispatch) => {
+  axios
+    .post('/notifications', notificationIds)
+    .then((res) => {
+      dispatch({
+        type: MARK_NOTIFICATIONS_READ
+      });
+    })
+    .catch((err) => console.log(err));
+};
 
 export const setAuthorizationHeader = (token) => {
   console.log(token);

@@ -96,6 +96,7 @@ class Event extends React.Component {
 
   componentDidMount = () => {
     this.props.getEvent(this.props.match.params.eventId);
+    console.log(this.props.match.params);
   }
 
 
@@ -159,7 +160,7 @@ class Event extends React.Component {
               <p className={classes.subtitleText}>Forum</p>
               <Divider/>
               <Post eventId={eventObj.eventId}/>
-              <List/>
+              <List forumIdParam={this.props.match.params.forumId ? this.props.match.params.forumId : null}/>
             </div>
           </div>
         </Grid>
