@@ -195,6 +195,7 @@ class AddEvent extends Component {
           </MyButton>
           <DialogTitle>{'Add an event!'}</DialogTitle>
           <DialogContent>
+            {this.state.errors.overlapped ? <Typography variant='body6' color='primary'>{this.state.errors.overlapped}</Typography> : null}
             <form onSubmit={this.handleSubmit}>
               <Grid container spacing={6}>
                 <Grid item xs={12} sm={4}>

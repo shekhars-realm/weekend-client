@@ -36,7 +36,7 @@ class Replies extends Component {
     return (
       <Grid container>
         {
-          replies.map((reply, index) => {
+          replies.length > 0 ? replies.map((reply, index) => {
             const {body, createdAt, userImage, user} = reply;
             return (
               <Fragment>
@@ -49,18 +49,14 @@ class Replies extends Component {
                       <div className={classes.commentData}>
                         <Typography variant="body2" color="primary" component={Link} to={`/profile/${user}`}>{user}</Typography>
                         {/*<Typography variant="body2" color="textSecondary">{dayjs(createdAt).fromNow('h:mm a,MMMM DD YYYY')}</Typography>*/}
-                        <hr className={classes.horizontalDivider}/>
                         <Typography variant="h5">{body}</Typography>
                       </div>
                     </Grid>
                   </Grid>
                 </Grid>
-                {
-                  index !== replies.length - 1 && <hr className={classes.visibleSeparator}/>
-                }
               </Fragment>
             )
-          })
+          }) : <p className={classes.noReply}>No replies yet</p>
         }
       </Grid>
     )

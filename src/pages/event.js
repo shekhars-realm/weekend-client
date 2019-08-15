@@ -104,7 +104,7 @@ class Event extends React.Component {
     console.log(this.props);
     const {classes, loading, eventObj, handle, eventJoined, alert, eventParticipants} = this.props
     const eventDetails = loading ? <CircularProgress size={200} thickness={2} className={classes.progressSpinner}/> : (
-      <Grid container spacing={6}>
+      <Grid container spacing={0}>
         <Grid item sm={3} xs={12}>
           <SmallMap location={eventObj.geoPoint}/>
         </Grid>
@@ -153,6 +153,9 @@ class Event extends React.Component {
                     </Link>
                   )
                 })
+              }
+              {
+                eventParticipants.length === 0 && <Typography variant='body5'>No members yet</Typography>
               }
             </div>
             </div>

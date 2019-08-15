@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import axios from 'axios'
 //mui Imports
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -13,7 +14,8 @@ const styles = theme => ({
 
   replyForm: {
     display: 'flex',
-    width: '100%'
+    width: '100%',
+    marginTop: 20
   }
 })
 
@@ -29,6 +31,26 @@ class ReplyForm extends React.Component {
   }
   handleSubmit = (event) => {
     event.preventDefault();
+    if(this.state.reply === '') {
+      const errors = {
+        reply: 'cannot leave empty!'
+      }
+      this.setState({errors})
+    } else {
+      const obj = {
+        body: this.state.reply,
+        forumId: this.props.forumId
+      }
+      axios.post('/reply/add', obj).then(res => {
+        this.props.replyCountChange()
+        this.setState({reply: ''})
+      }).catch(err => {
+        const errors = {
+          reply: 'Something went wrong!'
+        }
+        this.setState({errors})
+      })
+    }
   }
   render () {
     const {classes} = this.props

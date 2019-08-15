@@ -98,10 +98,17 @@ export const joinEvent = (eventId) => (dispatch) => {
         userImage: store.getState().user.credentials.imageUrl
       }
     })
-    dispatch({
-      type: ALERT_USER,
-      payload: 'Event cannot be removed. Try again later!'
-    })
+    if(err.response && err.response.status === 405) {
+      dispatch({
+        type: ALERT_USER,
+        payload: 'Clear your schedule for this time!'
+      })
+    } else {
+      dispatch({
+        type: ALERT_USER,
+        payload: 'Event cannot be removed. Try again later!'
+      })
+    }
   })
 }
 

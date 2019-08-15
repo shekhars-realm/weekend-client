@@ -63,7 +63,7 @@ const styles = (theme) => ({
     textDecoration: 'underline'
   },
   repliesText: {
-    marginTop: 30,
+    marginTop: 20,
     fontSize: 20,
     padding: 5
   }
@@ -113,10 +113,10 @@ class FormDialog extends React.Component {
           <hr className={classes.horizontalDivider}/>
           <Typography variant="h4">{forum.body}</Typography>
         </Grid>
+        <ReplyForm forumId={forum.forumId}/>
         <p className={classes.repliesText}>Replies</p>
         <hr className={classes.visibleSeparator}/>
-        <ReplyForm forumId={forum.forumId}/>
-        {forum.replies && <Replies replies={forum.replies}/>}
+        {replies && <Replies replies={replies}/>}
       </Grid>
     )
 
