@@ -58,7 +58,7 @@ class Home extends React.Component {
         <Grid item sm={1}/>
         <Grid item sm={1}/>
         <Grid style={{padding: 0}} item sm={10} xs={12}>
-          <Map/>
+        {/*  <Map/>*/}
         </Grid>
         <Grid item sm={1}/>
         <Grid item sm xs={12}>

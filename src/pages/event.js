@@ -4,6 +4,8 @@ import SmallMap from '../components/Maps/SmallMap'
 import {Link} from 'react-router-dom';
 import Post from '../components/Forum/Post'
 import List from '../components/Forum/List'
+import RollCall from '../components/Events/RollCall';
+import DeleteEvent from '../components/Events/DeleteEvent'
 //mui imports
 import Snackbar from '@material-ui/core/Snackbar';
 import {withStyles} from '@material-ui/core/styles';
@@ -135,14 +137,20 @@ class Event extends React.Component {
             </div>
             {
               eventObj.user === handle ? (
-                <Button className={classes.actionButton} variant='contained' color='primary'>Delete</Button>
+                <DeleteEvent eventId={eventObj.eventId} history={this.props.history}/>
               ) : (
                 eventJoined ? <Button className={classes.actionButton} variant='contained' color='primary' onClick={() => {this.props.leaveEvent(eventObj.eventId)}}>Leave</Button> :
                 <Button className={classes.actionButton} variant='contained' color='secondary' onClick={() => {this.props.joinEvent(eventObj.eventId)}}>Join</Button>
               )
             }
             <div className={classes.participants}>
-              <p className={classes.subtitleText}>Members</p>
+              <p className={classes.subtitleText}>
+                Members
+                {
+                  eventObj.endTime < new Date().toISOString() && eventObj.user === handle ?
+                  <RollCall eventParticipants={eventParticipants}/> : null
+                }
+              </p>
               <Divider/>
               <div className={classes.participantsImg}>
               {

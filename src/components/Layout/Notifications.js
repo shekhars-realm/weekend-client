@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import PropTypes from 'prop-types';
+import EventDeleted from '../Events/EventDeleted'
+import RateEvent from '../Events/RateEvent'
 // MUI stuff
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -60,14 +62,17 @@ class Notifications extends Component {
     let notificationsMarkup =
       notifications && notifications.length > 0 ? (
         notifications.map((not) => {
+          console.log(not);
           const verb = not.type === 'forumPost' ? 'posted in your forum' : 'replied to your post';
           const time = dayjs(not.createdAt).fromNow();
           const iconColor = not.read ? 'primary' : 'secondary';
-          const icon = (<img style={{width: 50, height: 50, objectFit: 'cover', borderRadius: '50%'}} src={not.senderImage}/>);
-
-          return (
-            <MenuItem key={not.createdAt} onClick={this.handleClose}>
-              {icon}
+          const icon = (<img style={{width: 40, height: 40, objectFit: 'cover', borderRadius: '50%', marginRight: 10}} src={not.senderImage}/>);
+          const content = not.type === 'eventDeleted' ? (
+            <RateEvent/>
+          ) : (
+            not.type === 'rateEvent' ? (
+              <RateEvent/>
+            ) : (
               <Typography
                 component={Link}
                 color="default"
@@ -76,6 +81,13 @@ class Notifications extends Component {
               >
                 {not.sender} {verb} {time}
               </Typography>
+            )
+          )
+
+          return (
+            <MenuItem key={not.createdAt}>
+              {icon}
+              {content}
             </MenuItem>
           );
         })

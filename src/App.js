@@ -29,7 +29,7 @@ console.log(process.env);
 
 const theme = createMuiTheme(themeFile);
 
-axios.defaults.baseURL = 'http://localhost:5000/weekend-62173/us-central1/api';
+axios.defaults.baseURL = 'https://europe-west2-weekend-62173.cloudfunctions.net/api';
 
 const token = localStorage.FBIdToken;
 if(token) {
@@ -59,7 +59,6 @@ function App() {
               <Route exact path='/' component={home}/>
               <AuthRoute exact path='/login' component={login}/>
               <AuthRoute exact path='/signup' component={signup}/>
-              <Route exact path='/chat' component={chat}/>
               <AuthRoute exact path='/event/:eventId' component={event}/>
               <AuthRoute exact path="/profile/:handle" component={profile}/>
               <AuthRoute

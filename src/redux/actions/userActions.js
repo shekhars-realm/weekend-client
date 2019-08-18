@@ -53,7 +53,7 @@ export const logoutUser = (history) => (dispatch) => {
   dispatch({
     type: SET_UNAUTHENTICATED
   })
-  history.push('/login')
+  if(history) history.push('/login')
 }
 
 export const getLoadedUser = (handle) => (dispatch) => {

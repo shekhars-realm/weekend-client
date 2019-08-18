@@ -259,7 +259,6 @@ export const getEvent = (eventId) => (dispatch) => {
     type: LOADING_UI
   });
   axios.get(`/event/${eventId}`).then((res) => {
-    console.log(res);
     dispatch({
       type: SET_EVENT,
       payload: res.data.event
