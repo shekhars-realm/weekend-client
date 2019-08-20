@@ -8,6 +8,7 @@ import {
   SET_USER_LOCATION,
   SET_USER_FILTER,
   SET_LOADED_USER,
+  DELETE_NOTIFICATION,
   MARK_NOTIFICATIONS_READ
 } from '../types';import axios from 'axios';
 
@@ -123,4 +124,12 @@ export const setAuthorizationHeader = (token) => {
   const FBIdToken = `Bearer ${token}`;
   localStorage.setItem('FBIdToken', `Bearer ${token}`);
   axios.defaults.headers.common['Authorization'] = FBIdToken;
+}
+
+
+export const deleteNotification = (notificationId) => (dispatch) => {
+  dispatch({
+    type: DELETE_NOTIFICATION,
+    payload: notificationId
+  })
 }

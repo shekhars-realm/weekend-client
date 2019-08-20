@@ -105,6 +105,11 @@ class Event extends React.Component {
   render () {
     console.log(this.props);
     const {classes, loading, eventObj, handle, eventJoined, alert, eventParticipants} = this.props
+    let checkParticipantStatus = eventParticipants.every(participant => {
+           return participant.status !== undefined
+         })
+    console.log(checkParticipantStatus ,  eventParticipants.length > 0 , eventObj.user === handle);
+    let showRollCall = !checkParticipantStatus &&  eventParticipants.length > 0 && eventObj.user === handle;
     const eventDetails = loading ? <CircularProgress size={200} thickness={2} className={classes.progressSpinner}/> : (
       <Grid container spacing={0}>
         <Grid item sm={3} xs={12}>
@@ -147,8 +152,7 @@ class Event extends React.Component {
               <p className={classes.subtitleText}>
                 Members
                 {
-                  eventObj.endTime < new Date().toISOString() && eventObj.user === handle ?
-                  <RollCall eventParticipants={eventParticipants}/> : null
+                  showRollCall ? <RollCall participants={eventObj.participants} eventId={eventObj.eventId}/> : null
                 }
               </p>
               <Divider/>

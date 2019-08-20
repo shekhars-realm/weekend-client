@@ -7,6 +7,7 @@ export const SET_USER_LOCATION = 'SET_USER_LOCATION';
 export const SET_USER_FILTER = 'SET_USER_FILTER';
 export const MARK_NOTIFICATIONS_READ = 'MARK_NOTIFICATIONS_READ';
 export const SET_LOADED_USER = 'SET_LOADED_USER';
+export const DELETE_NOTIFICATION = 'DELETE_NOTIFICATION';
 //ui reducer types
 export const SET_ERRORS = 'SET_ERRORS';
 export const LOADING_UI = 'LOADING_UI';
@@ -26,6 +27,7 @@ export const JOIN_EVENT = 'JOIN_EVENT';
 export const LEAVE_EVENT = 'LEAVE_EVENT';
 export const ALERT_USER = 'ALERT_USER';
 export const DELETE_ALERT = 'DELETE_ALERT';
+export const CHANGE_PARTICIPANT_STATUS = 'CHANGE_PARTICIPANT_STATUS';
 //forum reducer types
 export const LOADING_FORUMS = 'LOADING_FORUMS';
 export const LOADING_FORUM = 'LOADING_FORUM';

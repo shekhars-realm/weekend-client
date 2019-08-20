@@ -5,6 +5,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import PropTypes from 'prop-types';
 import EventDeleted from '../Events/EventDeleted'
 import RateEvent from '../Events/RateEvent'
+import UserAbsent from '../Events/UserAbsent'
 // MUI stuff
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -68,19 +69,23 @@ class Notifications extends Component {
           const iconColor = not.read ? 'primary' : 'secondary';
           const icon = (<img style={{width: 40, height: 40, objectFit: 'cover', borderRadius: '50%', marginRight: 10}} src={not.senderImage}/>);
           const content = not.type === 'eventDeleted' ? (
-            <RateEvent/>
+            <EventDeleted not={not}/>
           ) : (
-            not.type === 'rateEvent' ? (
-              <RateEvent/>
+            not.type === 'markedAsPresent' ? (
+              <RateEvent not={not}/>
             ) : (
-              <Typography
-                component={Link}
-                color="default"
-                variant="body1"
-                to={`/event/${not.eventId}/forum/${not.forumId}`}
-              >
-                {not.sender} {verb} {time}
-              </Typography>
+              not.type === 'markedAsAbsent' ? (
+                <UserAbsent not={not}/>
+              ) : (
+                <Typography
+                  component={Link}
+                  color="default"
+                  variant="body1"
+                  to={`/event/${not.eventId}/forum/${not.forumId}`}
+                >
+                  {not.sender} {verb} {time}
+                </Typography>
+              )
             )
           )
 

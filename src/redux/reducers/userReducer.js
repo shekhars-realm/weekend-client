@@ -11,7 +11,8 @@ import {
   SET_USER_LOCATION,
   SET_USER_FILTER,
   SET_LOADED_USER,
-  MARK_NOTIFICATIONS_READ
+  MARK_NOTIFICATIONS_READ,
+  DELETE_NOTIFICATION
 } from '../types';
 
 const initialState = {
@@ -101,6 +102,13 @@ export default function(state = initialState, action) {
               ...state,
               loading: true
             }
+        case DELETE_NOTIFICATION:
+          state.user.notifications = state.user.notifications.filter(noti => {
+            return noti.notificationId !== action.payload
+          })
+          return {
+            ...state
+          }
         default:
             return state;
     }

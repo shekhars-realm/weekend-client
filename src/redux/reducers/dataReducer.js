@@ -9,7 +9,8 @@ import {
   JOIN_EVENT,
   LEAVE_EVENT,
   ALERT_USER,
-  DELETE_ALERT
+  DELETE_ALERT,
+  CHANGE_PARTICIPANT_STATUS
 } from '../types';
 const initialState = {
   eventAdded: false,
@@ -99,6 +100,16 @@ export default function(state = initialState, action) {
       return {
         ...state,
         alert: action.payload
+      }
+    case CHANGE_PARTICIPANT_STATUS:
+      return {
+        ...state,
+        eventParticipants: state.eventParticipants.map(participant => {
+          if(participant.user === action.payload.user) {
+            participant.status = action.payload.status
+          }
+          return participant
+        })
       }
     default:
       return {

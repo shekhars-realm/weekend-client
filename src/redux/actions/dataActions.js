@@ -18,6 +18,7 @@ import {
   JOIN_EVENT,
   LEAVE_EVENT,
   ALERT_USER,
+  CHANGE_PARTICIPANT_STATUS
 } from '../types';
 import store from '../store';
 import axios from 'axios';
@@ -307,5 +308,12 @@ export const verifyLocation = (locationString) => (dispatch) => {
         location: 'Location is unknown!'
       }
     })
+  })
+}
+
+export const changeParticipantStatus = (body) => (dispatch) => {
+  dispatch({
+    type: CHANGE_PARTICIPANT_STATUS,
+    payload: body
   })
 }
