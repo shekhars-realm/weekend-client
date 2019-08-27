@@ -10,7 +10,7 @@ import {
   ALERT_USER,
   DELETE_ALERT,
   LOADING_FORUM,
-  SET_FORUM
+  SET_FORUM,
 } from '../types';
 
 const initialState={
@@ -70,6 +70,11 @@ export default function(state = initialState, action) {
         loadingForum: false,
         forum: action.payload,
         replies: action.payload.replies
+      }
+    case ADD_REPLY:
+      return {
+        ...state,
+        replies: [action.payload, ...state.replies]
       }
     default:
       return {

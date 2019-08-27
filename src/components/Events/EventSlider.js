@@ -219,15 +219,6 @@ class EventSlider extends React.Component {
                     >
                       Info
                     </button>
-                    <button
-                      onClick={() => this.actionButtonEvent(event.eventId, event.joined, authenticated)}
-                      variant="contained"
-                      class="actionBtn getinBtn"
-                    >
-                      {
-                        event.joined ? 'Leave' : 'Join'
-                      }
-                    </button>
                   </div>
                 })
               }

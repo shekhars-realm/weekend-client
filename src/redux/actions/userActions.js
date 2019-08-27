@@ -11,6 +11,7 @@ import {
   DELETE_NOTIFICATION,
   MARK_NOTIFICATIONS_READ
 } from '../types';import axios from 'axios';
+import {setLocations} from './dataActions';
 
 export const loginUser = (userData, history) => (dispatch) => {
     dispatch({type: LOADING_UI});
@@ -93,10 +94,12 @@ export const uploadImage = (formData) => (dispatch) => {
 }
 
 export const setUserFilter = (filter) => (dispatch) => {
+  console.log('in usre actino', filter, setLocations);
   dispatch({
     type: SET_USER_FILTER,
     payload: filter
   });
+
 }
 
 export const editUserDetails = (userDetails) => (dispatch) => {

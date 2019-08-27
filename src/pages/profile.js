@@ -87,7 +87,7 @@ class profile extends Component {
         events.map((event) => {
           return (
             <div class='eventCard'>
-              <EventCard event={event}/>
+              <EventCard participants event={event}/>
               <button
                 onClick={() => {this.props.history.push(`/event/${event.eventId}`)}} variant="contained"
                 class="actionBtn infoBtn"
@@ -107,15 +107,15 @@ class profile extends Component {
     </Paper>
     )
     return (
-      <Grid container spacing={6}>
+      <Grid container spacing={0}>
         <Grid item sm={1} xs={12}/>
-        <Grid item sm={3} xs={12}>
+        <Grid style={{padding: '10px'}} item sm={3} xs={12}>
           <Profile history={this.props.history} handle={this.state.handle}/>
         </Grid>
-        <Grid item sm={4} xs={12}>
+        <Grid style={{padding: '10px'}} item sm={4} xs={12}>
           <Schedule/>
         </Grid>
-        <Grid item sm={3} xs={12}>
+        <Grid style={{padding: '10px'}} item sm={3} xs={12}>
           {eventList}
         </Grid>
         <Grid item sm={1} xs={12}/>

@@ -10,6 +10,13 @@ import mapStyles from '../../utils/mapStyle'
 class SmallMap extends React.Component {
 
   render () {
+    let iconMarker = new window.google.maps.MarkerImage(
+              `/images/mapIcon.jpg`,
+              null, /* size is determined at runtime */
+              null, /* origin is 0,0 */
+              null, /* anchor is bottom center of the scaled image */
+              new window.google.maps.Size(40, 40)
+          );
     console.log('props in smal mp: ', this.props);
     const MyMapComponent = compose(
       withProps({
@@ -42,6 +49,7 @@ class SmallMap extends React.Component {
         defaultOptions={{styles: mapStyles}}
       >
         <Marker
+          icon={iconMarker}
           key={0}
           position={{ lat: this.props.location._latitude,
           lng: this.props.location._longitude}}

@@ -19,7 +19,7 @@ import UnFoldMore from '@material-ui/icons/UnfoldMore';
 import ChatIcon from '@material-ui/icons/Chat';
 //redux Imports
 import {connect} from 'react-redux';
-import {getForumDetails} from '../../redux/actions/forumActions';
+import {getForumDetails, addReply} from '../../redux/actions/forumActions';
 
 const styles = (theme) => ({
   horizontalDivider: {
@@ -113,7 +113,7 @@ class FormDialog extends React.Component {
           <hr className={classes.horizontalDivider}/>
           <Typography variant="h4">{forum.body}</Typography>
         </Grid>
-        <ReplyForm forumId={forum.forumId}/>
+        <ReplyForm addReply={this.props.addReply} forumId={forum.forumId}/>
         <p className={classes.repliesText}>Replies</p>
         <hr className={classes.visibleSeparator}/>
         {replies && <Replies replies={replies}/>}
@@ -144,6 +144,7 @@ class FormDialog extends React.Component {
 FormDialog.propTypes = {
   classes: PropTypes.object.isRequired,
   getForumDetails: PropTypes.func.isRequired,
+  addReply: PropTypes.func.isRequired,
   loadingForum: PropTypes.bool.isRequired,
   replies: PropTypes.array.isRequired
 }
@@ -155,7 +156,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapActionsToProps = {
-  getForumDetails
+  getForumDetails,
+  addReply
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(withStyles(styles)(FormDialog));

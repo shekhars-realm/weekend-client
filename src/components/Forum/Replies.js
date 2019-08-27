@@ -38,6 +38,7 @@ class Replies extends Component {
         {
           replies.length > 0 ? replies.map((reply, index) => {
             const {body, createdAt, userImage, user} = reply;
+            const time = dayjs(createdAt).fromNow();
             return (
               <Fragment>
                 <Grid item sm={12}>
@@ -47,7 +48,8 @@ class Replies extends Component {
                     </Grid>
                     <Grid item sm={9}>
                       <div className={classes.commentData}>
-                        <Typography variant="body2" color="primary" component={Link} to={`/profile/${user}`}>{user}</Typography>
+                        <Typography variant="h6" color="primary" component={Link} to={`/profile/${user}`}>{user}</Typography>
+                        <Typography variant='caption' color='default'>, {time}</Typography>
                         {/*<Typography variant="body2" color="textSecondary">{dayjs(createdAt).fromNow('h:mm a,MMMM DD YYYY')}</Typography>*/}
                         <Typography variant="h5">{body}</Typography>
                       </div>

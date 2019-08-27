@@ -15,7 +15,7 @@ const mapStateToProps = (state) => ({
 });
 
 AuthRoute.propTypes = {
-  user: PropTypes.object.isRequired,
+  authenticated: PropTypes.bool.isRequired,
 
 };
 

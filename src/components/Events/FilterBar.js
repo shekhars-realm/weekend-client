@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import 'date-fns';
 import Script from 'react-load-script';
 import axios from 'axios'
+import _ from 'lodash';
 //mui imports
 import {withStyles} from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField';
@@ -31,7 +32,6 @@ const styles = theme => ({
     display: 'flex'
   },
   filterButton: {
-    background: 'transparent',
     margin: 24
   },
   cssLabel: {
@@ -65,12 +65,12 @@ class FilterBar extends React.Component {
   constructor(props) {
     super(props)
     this.state={
-      searchText: '',
+      searchText: this.props.filter.searchText,
       location: null,
-      radius: 20,
-      startTime: new Date().toISOString(),
+      radius: this.props.filter.radius,
+      startTime: this.props.filter.startTime,
       errors: {},
-      queryLocation: ''
+      queryLocation: this.props.filter.queryLocation
     }
   }
   componentWillReceiveProps(nextProps) {
@@ -79,14 +79,25 @@ class FilterBar extends React.Component {
         errors: nextProps.UI.errors
       })
     }
-    if(!nextProps.UI.errors && !nextProps.UI.loading) {
+    console.log('next filter props: ',nextProps.filter);
+    if(nextProps.filter.searchText !== this.props.filter.searchText) {
       this.setState({
-        searchText: '',
-        location: null,
-        radius: 20,
-        startTime: "2019-07-01T19:43:00.000Z",
-        errors: {},
-        queryLocation: 'meisenweg 6 kaiserslautern'
+        searchText: nextProps.filter.searchText
+      })
+    }
+    if(nextProps.filter.radius !== this.props.filter.radius) {
+      this.setState({
+        radius: nextProps.filter.radius
+      })
+    }
+    if(nextProps.filter.queryLocation !== this.props.filter.queryLocation) {
+      this.setState({
+        queryLocation: nextProps.filter.queryLocation
+      })
+    }
+    if(nextProps.filter.startTime !== this.props.filter.startTime) {
+      this.setState({
+        startTime: nextProps.filter.startTime
       })
     }
   }
@@ -107,6 +118,9 @@ class FilterBar extends React.Component {
       startTime: this.state.startTime
     }
     this.props.filterEvents(filterEvent);
+    if(this.props.handleClose) {
+      this.props.handleClose();
+    }
   }
   handleChange = (event) => {
     this.setState({
@@ -193,7 +207,7 @@ class FilterBar extends React.Component {
                 getAriaValueText={this.valuetext}
               />
             </div>
-            <Button type='submit' variant='contained' className={classes.filterButton}>
+            <Button type='submit' variant='contained' color='primary' className={classes.filterButton}>
               Filter
             </Button>
           </Grid>
@@ -208,11 +222,13 @@ FilterBar.propTypes = {
   classes: PropTypes.object.isRequired,
   locations: PropTypes.array.isRequired,
   filterEvents: PropTypes.func.isRequired,
-  UI: PropTypes.object.isRequired
+  UI: PropTypes.object.isRequired,
+  filter: PropTypes.object.isRequired
 }
 
 const mapStateToProps = (state) => ({
   locations: state.data.locations,
+  filter: state.user.filter,
   UI: state.UI
 })
 

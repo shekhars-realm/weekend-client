@@ -108,8 +108,8 @@ class Event extends React.Component {
     let checkParticipantStatus = eventParticipants.every(participant => {
            return participant.status !== undefined
          })
-    console.log(checkParticipantStatus ,  eventParticipants.length > 0 , eventObj.user === handle);
-    let showRollCall = !checkParticipantStatus &&  eventParticipants.length > 0 && eventObj.user === handle;
+    console.log(checkParticipantStatus ,  eventParticipants.length > 0 , eventObj.user === handle, eventObj.endTime < new Date().toISOString());
+    let showRollCall = !checkParticipantStatus &&  eventParticipants.length > 0 && eventObj.user === handle && eventObj.endTime < new Date().toISOString();
     const eventDetails = loading ? <CircularProgress size={200} thickness={2} className={classes.progressSpinner}/> : (
       <Grid container spacing={0}>
         <Grid item sm={3} xs={12}>
@@ -119,9 +119,6 @@ class Event extends React.Component {
           <div className={classes.eventDetails}>
             <div className={classes.eventName}>
               {eventObj.name}
-              <span className={
-              classes.distanceText
-              }>, 3 Kms</span>
             </div>
             <div className={classes.eventOrganizer}>
               created by:
@@ -144,8 +141,8 @@ class Event extends React.Component {
               eventObj.user === handle ? (
                 <DeleteEvent eventId={eventObj.eventId} history={this.props.history}/>
               ) : (
-                eventJoined ? <Button className={classes.actionButton} variant='contained' color='primary' onClick={() => {this.props.leaveEvent(eventObj.eventId)}}>Leave</Button> :
-                <Button className={classes.actionButton} variant='contained' color='secondary' onClick={() => {this.props.joinEvent(eventObj.eventId)}}>Join</Button>
+                eventJoined ? <Button disabled={eventObj.startTime < new Date().toISOString()} className={classes.actionButton} variant='contained' color='primary' onClick={() => {this.props.leaveEvent(eventObj.eventId)}}>Leave</Button> :
+                <Button disabled={eventObj.startTime < new Date().toISOString()} className={classes.actionButton} variant='contained' color='secondary' onClick={() => {this.props.joinEvent(eventObj.eventId)}}>Join</Button>
               )
             }
             <div className={classes.participants}>

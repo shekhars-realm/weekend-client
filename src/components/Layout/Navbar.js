@@ -10,9 +10,11 @@ import {connect} from 'react-redux';
 import {logoutUser} from '../../redux/actions/userActions';
 //MUI imports
 import AppBar from '@material-ui/core/AppBar';
+import Hidden from '@material-ui/core/Hidden';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import AppIcon from '../../images/icon.png';
 //import icons
 import AddIcon from '@material-ui/icons/Add';
 import HomeIcon from '@material-ui/icons/Home';
@@ -29,7 +31,12 @@ class Navbar extends Component {
             authenticated ? (
               <Fragment>
                 <Link to='/'>
-                  <p class="homeButton">Weekend</p>
+                  <Hidden xlUp>
+                    <img className="homeIcon" src={AppIcon} alt='app icon'/>
+                  </Hidden>
+                  <Hidden smDown>
+                    <p class="homeButton">Weekend</p>
+                  </Hidden>
                 </Link>
                 <div class='addEventBtn'>
                   <AddEvent history={this.props.history}/>
@@ -44,7 +51,12 @@ class Navbar extends Component {
             ) : (
               <Fragment>
                 <Link to='/'>
-                  <p class="homeButton">Weekend</p>
+                  <Hidden xlUp>
+                    <img className="homeIcon" src={AppIcon} alt='app icon'/>
+                  </Hidden>
+                  <Hidden smDown>
+                    <p class="homeButton">Weekend</p>
+                  </Hidden>
                 </Link>
                 <div class='addEventBtn'>
                   <AddEvent/>

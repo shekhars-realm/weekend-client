@@ -6,11 +6,16 @@ import ScheduleSkeleton from '../Skeletons/ScheduleSkeleton'
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
+import Typography from '@material-ui/core/Typography';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Button from '@material-ui/core/Button';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 //redux imports
 import {connect} from 'react-redux'
 
@@ -31,9 +36,9 @@ const styles = theme => ({
   eventCell: {
     background: theme.palette.primary.main,
     borderRadius: 5,
-    marginBottom: 10,
-    padding: 10,
-    textAlign: 'center'
+    marginBottom: 5,
+    textAlign: 'center',
+    width: '100%'
   },
   eventName: {
     color: 'white',
@@ -54,6 +59,12 @@ const styles = theme => ({
     fontSize: 30,
     textAlign: 'center',
     fontWeight: 700
+  },
+  expansionSummary: {
+    background: theme.palette.primary.main,
+    fontSize: 25,
+    color: 'white',
+    borderRadius: 5
   }
 })
 
@@ -83,20 +94,34 @@ class Schedule extends React.Component {
                 <div className={classes.eventList}>
                   {
                     row.events.length !== 0 ? (
-                      row.events.map((event) => {
-                        return(
-                          <Link to={'/event/' + event.eventId}>
-                            <div className={classes.eventCell}>
-                              <div className={classes.eventName}>
-                                {event.name}
-                              </div>
-                              <div className={classes.eventTime}>
-                              {moment(new Date(event.startTime)).format('LT') + ' - ' + moment(new Date(event.endTime)).format('LT')}
-                              </div>
-                            </div>
-                          </Link>
-                        )
-                      })
+                      <ExpansionPanel>
+                        <ExpansionPanelSummary
+                          expandIcon={<ExpandMoreIcon />}
+                          className={classes.expansionSummary}
+                          aria-controls="panel1a-content"
+                          id="panel1a-header"
+                        >
+                          <Typography variant='h6'>{row.events.length} events</Typography>
+                        </ExpansionPanelSummary>
+                        <ExpansionPanelDetails>
+                          {
+                            row.events.map(event => {
+                              return (
+                                  <div className={classes.eventCell}>
+                                    <Link to={'/event/'+event.eventId}>
+                                      <div className={classes.eventName}>
+                                        {event.name}
+                                      </div>
+                                    </Link>
+                                    <div className={classes.eventTime}>
+                                    {moment(new Date(event.startTime)).format('LT') + ' - ' + moment(new Date(event.endTime)).format('LT')}
+                                    </div>
+                                  </div>
+                              )
+                            })
+                          }
+                        </ExpansionPanelDetails>
+                      </ExpansionPanel>
                     ) : (
                       sameUserLoaded ? <Link to='/'>
                         <Button fullWidth variant='contained' color='secondary'>

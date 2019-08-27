@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import ForumDialog from './ForumDialog'
 import {Link} from 'react-router-dom'
 import ReplyForm from './ReplyForm';
+import dayjs from 'dayjs';
 //mui imports
 import {withStyles} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -30,13 +31,13 @@ const styles = theme => ({
   },
   handle: {
     float: 'left',
-    fontSize: 14
+    fontSize: 23
   },
   body: {
     float: 'left',
     fontSize: 20
   }
-}) 
+})
 
 class Forum extends React.Component {
   state={
@@ -52,11 +53,14 @@ class Forum extends React.Component {
   render () {
     console.log('in forum: ', this.props.forum);
     const {forum, classes} = this.props
+    const time = dayjs(forum.createdAt).fromNow();
     return (
       <div className={classes.forum}>
         <img src={forum.userImage} className={classes.userImage}/>
         <div className={classes.forumbody}>
-          <Typography className={classes.handle} color="primary" component={Link} to={`/profile/${forum.user}`}>{forum.user}</Typography>
+          <Typography className={classes.handle} color="primary" variant="h6" component={Link} to={`/profile/${forum.user}`}>{forum.user}</Typography>
+          <br/>
+          <Typography style={{float: 'right'}} variant='caption' color='default'>{time}</Typography>
           <br/>
           <Typography className={classes.body} variant="body1">{forum.body}</Typography>
           <br/>

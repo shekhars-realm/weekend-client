@@ -5,12 +5,12 @@ import {
   LOADING_REPLIES,
   SET_REPLIES,
   SET_FORUMS,
-  ADD_REPLY,
   DELETE_REPLY,
   ALERT_USER,
   DELETE_ALERT,
   SET_FORUM,
-  LOADING_FORUM
+  LOADING_FORUM,
+  ADD_REPLY
 } from '../types';
 import store from '../store';
 import axios from 'axios';
@@ -99,5 +99,18 @@ export const getForumDetails = (forumId) => (dispatch) => {
     })
   }).catch(err => {
     console.log(err);
+  })
+}
+
+export const addReply = (obj) => (dispatch) => {
+  const reply = {
+    ...obj,
+    createdAt: new Date().toISOString(),
+    user: store.getState().user.credentials.handle,
+    userImage: store.getState().user.credentials.imageUrl
+  }
+  dispatch({
+    type: ADD_REPLY,
+    payload: reply
   })
 }

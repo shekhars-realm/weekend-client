@@ -45,7 +45,7 @@ export const addEvent = (event) => (dispatch) => {
             description: res.data.description,
             geoHash: res.data.geoHash,
             geoPoint: res.data.geoPoint,
-            primatyTag: res.data.tags[0],
+            //primatyTag: res.data.tags[0],
             startTime: res.data.startTime,
             endTime: res.data.endTime
           }
@@ -176,7 +176,6 @@ export const filterEvents = (filter) => (dispatch) => {
   axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${filter.queryLocation}&key=${process.env.REACT_APP_API_KEY}`).then((res) => {
     axios.defaults.headers.common['Authorization'] = localStorage.getItem('FBIdToken');
     if(res.data.results.length > 0) {
-      delete filter.queryLocation;
       dispatch({
         type: SET_USER_FILTER,
         payload: {
@@ -184,9 +183,7 @@ export const filterEvents = (filter) => (dispatch) => {
             lat: res.data.results[0].geometry.location.lat,
             lng: res.data.results[0].geometry.location.lng
           },
-          radius: filter.radius,
-          searchText: filter.searchText,
-          startTime: filter.startTime
+          ...filter
         }
       })
       filter.location = {
@@ -229,6 +226,7 @@ export const filterEvents = (filter) => (dispatch) => {
 }
 
 export const setLocations = (filter) => (dispatch) => {
+  console.log('in data actinos: ', filter);
   dispatch({
     type: LOADING_UI
   });

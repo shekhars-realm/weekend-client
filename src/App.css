@@ -16,7 +16,7 @@ body {
   width: 95%;
 }
 .appBar{
-
+  max-width: 100%
 }
 a{
   text-decoration: none;
@@ -31,7 +31,7 @@ a{
 }
 .addEventBtn {
   position: absolute;
-  left: 50%;
+  left: 48%;
   border: 3px solid white;
   border-radius: 5px;
 }
@@ -52,4 +52,8 @@ a{
 .userProfileBtn {
   position: absolute;
   right: 0;
+}
+
+.homeIcon {
+  max-width: 40px;
 }

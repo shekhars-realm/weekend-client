@@ -7,12 +7,15 @@ import EditDetails from './EditDetails';
 import MyButton from '../../utils/MyButton'
 import ProfileSkeleton from '../../utils/ProfileSkeleton';
 //mui Imports
+import Rating from '@material-ui/lab/Rating';
 import Paper from '@material-ui/core/Paper';
+import Divider from '@material-ui/core/Divider';
 import MuiLink from '@material-ui/core/Link';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import ToolTip from '@material-ui/core/Tooltip'
+import Box from '@material-ui/core/Box';
 //redux imports
 import {connect} from 'react-redux';
 import {logoutUser, uploadImage, getLoadedUser} from '../../redux/actions/userActions';
@@ -73,7 +76,8 @@ const styles = theme => ({
    width: '100%',
    background: theme.palette.primary.main,
    borderRadius: 5,
-   color: 'white'
+   color: 'white',
+   marginBottom: 10
  }
 });
 
@@ -154,7 +158,17 @@ class Profile extends React.Component {
             {
               loadedUser.bio && <Typography className={classes.userBio} variant='h6'>{loadedUser.bio}</Typography>
             }
-            <hr/>
+            <Divider/>
+            {
+              loadedUser.ratings === 0 ? 'No ratings available yet' :
+              <Box component="fieldset" mb={3} borderColor="transparent">
+                <Rating style={{paddingLeft: '35%'}} value={Math.round(loadedUser.rating)} readOnly />
+                <Typography variant='caption'>{loadedUser.ratingCount} ratings</Typography>
+              </Box>
+            }
+            <Typography variant='h6' color='default'>Events Organised: <span>{loadedUser.eventsOrganised}</span></Typography>
+            <Typography variant='h6' color='default'>Events Attended: <span>{loadedUser.eventsAttended}</span></Typography>
+            <Divider/>
             {
               loadedUser.location && (
                 <Fragment>

@@ -155,7 +155,7 @@ class AddEvent extends Component {
       description: this.state.description,
       location: this.state.location,
       headCount: this.state.headCount,
-      tags: this.state.tags,
+      //tags: this.state.tags,
       startTime: this.state.startTime,
       endTime: this.state.endTime,
       queryLocation: this.state.queryLocation,
@@ -220,12 +220,12 @@ class AddEvent extends Component {
                   onChange={this.handleChange}
                   fullWidth
                   name='description'
-                  rows="4"
+                  rows="8"
                   placeholder= 'Description'
                   margin="normal"
                   variant="outlined"
                   />
-                  <TagSuggestions errors={this.state.errors} selectedTags={this.selectedTags} classes={classes}/>
+                {/*<TagSuggestions errors={this.state.errors} selectedTags={this.selectedTags} classes={classes}/>*/}
                 </Grid>
                 <Grid item xs={12} sm={4}>
                   <div className={classes.locationContainer}>

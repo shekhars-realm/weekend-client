@@ -129,6 +129,7 @@ class RateEvent extends React.Component {
         <Dialog
           open={this.state.open}
           fullWidth='sm'
+          scroll='body'
           onClose={this.handleClose}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"

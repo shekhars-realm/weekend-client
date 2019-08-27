@@ -29,7 +29,9 @@ const initialState = {
 
     },
     notifications: [],
-    filter: {}
+    filter: {
+
+    }
 };
 
 const startOfWeek = (date) => {
@@ -95,13 +97,15 @@ export default function(state = initialState, action) {
         case SET_USER_FILTER:
           return {
             ...state,
-            filter: action.payload
+            filter: {
+              ...action.payload
+            }
           };
         case LOADING_USER:
-            return {
-              ...state,
-              loading: true
-            }
+          return {
+            ...state,
+            loading: true
+          }
         case DELETE_NOTIFICATION:
           state.user.notifications = state.user.notifications.filter(noti => {
             return noti.notificationId !== action.payload

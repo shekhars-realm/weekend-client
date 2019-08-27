@@ -42,9 +42,11 @@ class ReplyForm extends React.Component {
         forumId: this.props.forumId
       }
       axios.post('/reply/add', obj).then(res => {
-        this.props.replyCountChange()
+        if(this.props.replyCountChange) this.props.replyCountChange();
+        if(this.props.addReply) this.props.addReply(obj)
         this.setState({reply: ''})
       }).catch(err => {
+        console.log(err);
         const errors = {
           reply: 'Something went wrong!'
         }
@@ -63,6 +65,7 @@ class ReplyForm extends React.Component {
         error={this.state.errors.reply ? true : false}
         helperText={this.state.errors.reply}
         fullWidth
+        value={this.state.reply}
         onChange={this.handleChange}
       />
       <Button type='submit' color='secondary'><Send/></Button>
