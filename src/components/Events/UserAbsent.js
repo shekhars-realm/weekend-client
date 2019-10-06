@@ -19,7 +19,7 @@ class UserAbsent extends React.Component {
     const {open} = this.state;
     return (
       <div>
-        <Typography variant="body1" color="default" onClick={() => {this.setState({open: true})}}>
+        <Typography variant="body2" color="default" onClick={() => {this.setState({open: true})}}>
           You were absent in an event!
         </Typography>
         <Dialog

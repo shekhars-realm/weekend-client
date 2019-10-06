@@ -2,7 +2,7 @@ import React, {Component, Fragment} from 'react'
 import PropTypes from 'prop-types'
 import withStyles from '@material-ui/core/styles/withStyles';
 import {Link} from 'react-router-dom';
-import dayjs from 'dayjs';
+import moment from 'moment';
 //mui Imports
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
@@ -18,8 +18,9 @@ const styles = theme => ({
     marginBottom: 20
   },
   commentImage: {
-    maxWidth: 55,
-    height: 55,
+    maxWidth: 40,
+    marginRight: 10,
+    height: 40,
     objectFit: 'cover',
     borderRadius: '50%',
   },
@@ -38,7 +39,7 @@ class Replies extends Component {
         {
           replies.length > 0 ? replies.map((reply, index) => {
             const {body, createdAt, userImage, user} = reply;
-            const time = dayjs(createdAt).fromNow();
+            const time = moment(createdAt).fromNow();
             return (
               <Fragment>
                 <Grid item sm={12}>
@@ -48,10 +49,10 @@ class Replies extends Component {
                     </Grid>
                     <Grid item sm={9}>
                       <div className={classes.commentData}>
-                        <Typography variant="h6" color="primary" component={Link} to={`/profile/${user}`}>{user}</Typography>
+                        <Typography variant="body2" color="secondary" component={Link} to={`/profile/${user}`}>{user}</Typography>
                         <Typography variant='caption' color='default'>, {time}</Typography>
                         {/*<Typography variant="body2" color="textSecondary">{dayjs(createdAt).fromNow('h:mm a,MMMM DD YYYY')}</Typography>*/}
-                        <Typography variant="h5">{body}</Typography>
+                        <Typography variant="body2">{body}</Typography>
                       </div>
                     </Grid>
                   </Grid>

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import ForumDialog from './ForumDialog'
 import {Link} from 'react-router-dom'
 import ReplyForm from './ReplyForm';
-import dayjs from 'dayjs';
+import moment from 'moment';
 //mui imports
 import {withStyles} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -17,8 +17,8 @@ const styles = theme => ({
     '-webkit-transition': '1s'
   },
   userImage: {
-    width: 70,
-    height: 70,
+    width: 50,
+    height: 50,
     objectFit: 'cover',
     borderRadius: '50%'
   },
@@ -31,11 +31,11 @@ const styles = theme => ({
   },
   handle: {
     float: 'left',
-    fontSize: 23
+    fontSize: 14
   },
   body: {
     float: 'left',
-    fontSize: 20
+    fontSize: 14
   }
 })
 
@@ -53,22 +53,24 @@ class Forum extends React.Component {
   render () {
     console.log('in forum: ', this.props.forum);
     const {forum, classes} = this.props
-    const time = dayjs(forum.createdAt).fromNow();
+    const time = moment(forum.createdAt).fromNow();
     return (
       <div className={classes.forum}>
         <img src={forum.userImage} className={classes.userImage}/>
         <div className={classes.forumbody}>
-          <Typography className={classes.handle} color="primary" variant="h6" component={Link} to={`/profile/${forum.user}`}>{forum.user}</Typography>
+          <Typography className={classes.handle} color="secondary" variant="h6" component={Link} to={`/profile/${forum.user}`}>{forum.user}</Typography>
           <br/>
-          <Typography style={{float: 'right'}} variant='caption' color='default'>{time}</Typography>
+          <Typography style={{float: 'left'}} variant='caption' color='default'>{time}</Typography>
           <br/>
           <Typography className={classes.body} variant="body1">{forum.body}</Typography>
           <br/>
-          <ForumDialog replyCount={this.state.replyCount} forumId={forum.forumId} eventId={forum.eventId} openDialog={
+          <ForumDialog showReplyForm={this.props.showReplyForm} replyCount={this.state.replyCount} forumId={forum.forumId} eventId={forum.eventId} openDialog={
               this.props.forumIdParam !== null && this.props.forumIdParam === forum.forumId ? true
               : false
             }/>
-          <ReplyForm forumId={forum.forumId} replyCountChange={this.replyCountChange}/>
+          {
+            this.props.showReplyForm ? <ReplyForm forumId={forum.forumId} replyCountChange={this.replyCountChange}/> : null
+          }
         </div>
       </div>
     )

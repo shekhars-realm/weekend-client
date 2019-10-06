@@ -2,19 +2,23 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Link} from 'react-router-dom'
 import dayjs from 'dayjs';
-import ForumDialog from './ForumDialog'
 import MyButton from '../../utils/MyButton'
 import ReplyForm from './ReplyForm';
 import axios from 'axios';
 import Forum from './Forum';
 //mui imports
 import {withStyles} from '@material-ui/core/styles';
+import SpeakerNotes from '@material-ui/icons/SpeakerNotes'
 import Typography from '@material-ui/core/Typography';
+import CircularProgress from '@material-ui/core/CircularProgress';
 //redux imports
 import {connect} from 'react-redux';
 import {getForums} from '../../redux/actions/forumActions'
 
 const styles = theme => ({
+  forumList: {
+    textAlign: 'center'
+  },
   card: {
     position: 'relative',
     display: 'flex',
@@ -26,7 +30,11 @@ const styles = theme => ({
   content: {
    padding: 25,
    objectFit: 'cover'
-  }
+ },
+   errorIcon: {
+     color: 'dodgerblue',
+     fontSize: 50
+   },
 });
 
 class ForumList extends React.Component {
@@ -46,11 +54,19 @@ class ForumList extends React.Component {
     return(
       <div className={classes.forumList}>
         {
-          forums.length > 0 && forums.map(forum => {
-            return (
-              <Forum forumIdParam={this.props.forumIdParam} forum={forum}/>
-            )
-          })
+          loadingForums ? (
+            <CircularProgress size={50} thickness={2} className={classes.progressSpinner}/>
+          ) : (
+            forums.length > 0 ? forums.map(forum => {
+              return (
+                <Forum showReplyForm={this.props.showReplyForm} forumIdParam={this.props.forumIdParam} forum={forum}/>
+              )
+            }) : <div className={classes.noForums}>
+              <SpeakerNotes className={classes.errorIcon}/>
+              <Typography variant='h6'>Be the first to ask!</Typography>
+              <Typography variant='body2'>Ask the host about the event.</Typography>
+            </div>
+          )
         }
       </div>
     )

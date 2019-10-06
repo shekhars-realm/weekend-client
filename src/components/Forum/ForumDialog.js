@@ -5,6 +5,7 @@ import MyButton from '../../utils/MyButton';
 import dayjs from 'dayjs';
 import {Link} from 'react-router-dom';
 import Replies from './Replies';
+import $ from 'jquery'
 import ReplyForm from './ReplyForm';
 //Muiimports
 import Dialog from '@material-ui/core/Dialog';
@@ -27,8 +28,8 @@ const styles = (theme) => ({
     margin: 4
   },
   userImage: {
-    width: 65,
-    height: 65,
+    width: 45,
+    height: 45,
     objectFit: 'cover',
     borderRadius: '50%'
   },
@@ -101,23 +102,25 @@ class FormDialog extends React.Component {
     console.log('in dialog: ', this.props);
     const {classes, forum, replies, loadingForum} = this.props;
 
-    const dialogMarkup = loadingForum ? <div className={classes.spinnerDiv}><CircularProgress size={200} thickness={2}/></div> : (
-      <Grid container spacing={16}>
-        <Grid item sm={2}>
-          <img src={forum.userImage} alt='Profile' className={classes.userImage}/>
+    const dialogMarkup = loadingForum ? <div className={classes.spinnerDiv}><CircularProgress size={100} thickness={2}/></div> : (
+      <Fragment>
+        <Grid container spacing={16}>
+          <Grid style={{display: 'grid'}} item sm={2}>
+            <img src={forum.userImage} alt='Profile' className={classes.userImage}/>
+            <Typography variant="body2" color="secondary" component={Link} to={`/profile/${forum.user}`}>@{forum.user}</Typography>
+          </Grid>
+          <Grid style={{marginLeft: 10}} item sm={10}>
+            {/*<Typography variant="body2" color="textSecondary">{dayjs(forum.createdAt).format('h:mm a,MMMM DD YYYY')}</Typography>*/}
+            <Typography variant="body1">{forum.body}</Typography>
+          </Grid>
         </Grid>
-        <Grid item sm={10}>
-          <Typography variant="body1" color="primary" component={Link} to={`/profile/${forum.user}`}>@{forum.user}</Typography>
-          <hr className={classes.horizontalDivider}/>
-          {/*<Typography variant="body2" color="textSecondary">{dayjs(forum.createdAt).format('h:mm a,MMMM DD YYYY')}</Typography>*/}
-          <hr className={classes.horizontalDivider}/>
-          <Typography variant="h4">{forum.body}</Typography>
-        </Grid>
-        <ReplyForm addReply={this.props.addReply} forumId={forum.forumId}/>
-        <p className={classes.repliesText}>Replies</p>
-        <hr className={classes.visibleSeparator}/>
-        {replies && <Replies replies={replies}/>}
-      </Grid>
+          {
+            this.props.showReplyForm ? <ReplyForm addReply={this.props.addReply} forumId={forum.forumId}/> : null
+          }
+          <p className={classes.repliesText}>Replies</p>
+          <hr className={classes.visibleSeparator}/>
+          {replies && <Replies replies={replies}/>}
+      </Fragment>
     )
 
     return (
@@ -126,7 +129,7 @@ class FormDialog extends React.Component {
         <Dialog
           open={this.state.open}
           onClose={this.handleClose}
-          fullWidth
+          fullScreen={$(window).width() < 600 ? true : false}
           maxWidth='sm'
         >
           <MyButton tip='Close' onClick={this.handleClose} btnClassName={classes.closeButton}>

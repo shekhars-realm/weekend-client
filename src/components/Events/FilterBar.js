@@ -24,15 +24,25 @@ import {filterEvents} from '../../redux/actions/dataActions';
 const styles = theme => ({
   sliderContainer: {
     width: 300,
+    marginTop: 20
   },
   textField: {
-
+    'svg': {
+      color: 'red !important'
+    }
   },
   dateContainer: {
-    display: 'flex'
+    display: 'flex',
+    color: 'black'
   },
   filterButton: {
     margin: 24
+  },
+  filterButtonFullWidth: {
+    position: 'absolute',
+    bottom: 0,
+    width: '94%',
+    margin: '0px 0px 10px -3%'
   },
   cssLabel: {
     color : 'white'
@@ -40,12 +50,12 @@ const styles = theme => ({
 
   cssOutlinedInput: {
     '&$cssFocused $notchedOutline': {
-      borderColor: `${theme.palette.primary.main} !important`,
+      borderColor: `${theme.palette.secondary.main} !important`,
     }
   },
   cssOutlinedInput: {
     '&$cssFocused $notchedOutline': {
-      borderColor: `${theme.palette.primary.main} !important`,
+      borderColor: `${theme.palette.secondary.main} !important`,
     }
   },
 
@@ -65,7 +75,7 @@ class FilterBar extends React.Component {
   constructor(props) {
     super(props)
     this.state={
-      searchText: this.props.filter.searchText,
+      searchText: this.props.filter.searchText ? this.props.filter.searchText : '',
       location: null,
       radius: this.props.filter.radius,
       startTime: this.props.filter.startTime,
@@ -114,7 +124,7 @@ class FilterBar extends React.Component {
     const filterEvent = {
       radius: this.state.radius,
       queryLocation: this.state.queryLocation,
-      searchText: this.state.searchText,
+      searchText: this.state.searchText.toLowerCase(),
       startTime: this.state.startTime
     }
     this.props.filterEvents(filterEvent);
@@ -132,6 +142,7 @@ class FilterBar extends React.Component {
   }
   render () {
     const {classes} = this.props
+    console.log(this.props);
     return (
       <Fragment>
         <form onSubmit={this.handleSubmit}>
@@ -139,7 +150,7 @@ class FilterBar extends React.Component {
           <Grid item sm={3} xs={12}>
             <TextField
               id="eventSearch"
-              label="Search events"
+              label="Search keyword"
               placeholder= 'Find by name, tags'
               type="search"
               fullWidth
@@ -155,6 +166,7 @@ class FilterBar extends React.Component {
             <MuiPickersUtilsProvider className={classes.dateContainer} utils={DateFnsUtils}>
               <KeyboardDatePicker
                 margin="normal"
+                style={{color: 'black'}}
                 id="mui-pickers-date"
                 label="Date"
                 variant='outlined'
@@ -182,7 +194,7 @@ class FilterBar extends React.Component {
           </Grid>
           <Grid item sm={3} xs={12}>
             <TextField
-                type="searchLocation"
+                type="search"
                 fullWidth
                 name="queryLocation"
                 margin="normal"
@@ -203,13 +215,20 @@ class FilterBar extends React.Component {
                 value={this.state.radius}
                 onChange={this.handleRadiusChange}
                 valueLabelDisplay="auto"
+                style={{color: 'darkgrey'}}
                 aria-labelledby="range-slider"
                 getAriaValueText={this.valuetext}
+                max={20}
               />
             </div>
-            <Button type='submit' variant='contained' color='primary' className={classes.filterButton}>
-              Filter
-            </Button>
+            {this.props.isMobile ?
+              <Button type='submit' variant='contained' color='secondary' className={classes.filterButtonFullWidth}>
+                Filter
+              </Button> :
+              <Button type='submit' variant='contained' color='secondary' className={classes.filterButton}>
+                Filter
+              </Button>
+            }
           </Grid>
         </Grid>
         </form>

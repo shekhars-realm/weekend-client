@@ -1,6 +1,7 @@
 import React from "react"
 import { compose, withProps, withHandlers, withStateHandlers } from "recompose"
-import { withScriptjs, withGoogleMap, GoogleMap, Marker, InfoWindow } from "react-google-maps"
+import { withScriptjs, MarkerWithLabel, withGoogleMap, GoogleMap, Marker, InfoWindow } from "react-google-maps"
+import $ from 'jquery';
 import { MarkerClusterer } from "react-google-maps/lib/components/addons/MarkerClusterer";
 import _ from 'lodash';
 import mapStyles from '../utils/mapStyle'
@@ -33,61 +34,64 @@ class Map extends React.PureComponent {
     mapCentreIcon: null
   }
 
-  componentDidMount() {
-    const filter = {
-      radius: 20,
-      location: this.props.userLocation,
-      searchText: '',
-      startTime: new Date().toISOString()
-    };
-    this.setState({
-      filter: this.props.filter
-    })
-    const {authenticated, userImage} = this.props
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if(this.props.filter && this.props.filter.location !== this.state.filter.location) {
-      this.setState({
-        filter: this.props.filter
-      })
-    }
-  }
 
   getMapZoom = (radius) => {
     if(radius > 0 && radius <= 3) {
       return 18
     } else if(radius > 3 && radius <=6) {
-      return 16
+      return 17
     } else if(radius > 6 && radius <= 11) {
-      return 14
+      return 16
     } else if(radius > 11 && radius <= 15) {
+      return 15
+    } else if(radius > 15 && radius <= 20) {
+      return 14
+    } else if(radius > 20 && radius <= 30) {
       return 13
     } else {
       return 12
     }
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    if(this.props.filter && this.props.filter.location !== this.state.filter.location) {
+      this.setState({
+        filter: this.props.filter
+      })
+      console.log('map updated');
+      return true
+    } else {
+      console.log('map updated');
+      return false
+    }
+  }
+
   render() {
-    const {locations, userLocation, filter, authenticated, userImage} = this.props
+    const {locations, userLocation, filter, authenticated, handle} = this.props
+    console.log('in map: ',userLocation, filter);
     const mapZoom = this.getMapZoom(filter.radius)
     let mapCenter = new window.google.maps.MarkerImage(
-      authenticated ? userImage : 'https://firebasestorage.googleapis.com/v0/b/weekend-62173.appspot.com/o/no-img.png?alt=media&token=619f0cbc-8770-4ef6-a73a-905dc02bf144',
+      '/images/myLocation.png',
       null, /* size is determined at runtime */
       null, /* origin is 0,0 */
       null, /* anchor is bottom center of the scaled image */
-      new window.google.maps.Size(30, 30)
+      new window.google.maps.Size(20, 30),
     );
     var groupped = _.mapValues(_.groupBy(locations, 'locationString'), clist => clist.map(event => _.omit(event, 'locationString')))
-    console.log('groupped: ',groupped);
     Object.keys(groupped).length > 0 && Object.keys(groupped).forEach((key) => {
-      console.log(key, parseFloat(key.split(' ')[0]), parseFloat(key.split(' ')[1]), groupped[key]);
     })
     const MyMapComponent = compose(
       withProps({
         googleMapURL: `https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=${process.env.REACT_APP_API_KEY}`,
         loadingElement: <div style={{ height: `100%` }} />,
-        containerElement: <div style={{ height: `690px` }} />,
+      containerElement: <div style={$(window).width() > 600 ? {
+        height: 500
+      } : {
+        position: 'absolute',
+        top: 0,
+        width: '100%',
+        height: '100vh'
+      }} />,
         mapElement: <div style={{ height: `100%` }} />,
       }),
       withStateHandlers(() => ({
@@ -119,8 +123,9 @@ class Map extends React.PureComponent {
       >
         <Marker
           key='center'
+          labelStyle={{ textAlign: "center", width:220 + 'px', backgroundColor: "#7fffd4", fontSize: "14px", padding:  8 + "px"}}
           icon={mapCenter}
-          position={this.state.filter.location}/>
+          position={this.state.filter.location}></Marker>
         <MarkerClusterer
           onClick={(event) => props.onMarkerClustererClick(event)}
           averageCenter
@@ -140,6 +145,7 @@ class Map extends React.PureComponent {
                 <Marker
                   key={index}
                   icon={iconMarker}
+
                   onClick={props.onToggleOpen}
                   position={{ lat: parseFloat(key.split(' ')[0]), lng: parseFloat(key.split(' ')[1]) }}
                 >
@@ -174,7 +180,7 @@ const mapStateToProps = (state) => ({
   userLocation: state.user.userLocation,
   filter: state.user.filter,
   authenticated: state.user.authenticated,
-  userImage: state.user.credentials.imageUrl
+  handle: state.user.credentials.handle
 })
 
 export default connect(mapStateToProps, {setLocations})(Map)

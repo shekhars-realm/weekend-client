@@ -23,10 +23,11 @@ import { markNotificationsRead } from '../../redux/actions/userActions';
 
 class Notifications extends Component {
   state = {
-    anchorEl: null
+    anchorEl: null,
+    count: this.props.notifications.filter((not) => not.read === false).length
   };
   handleOpen = (event) => {
-    this.setState({ anchorEl: event.target });
+    this.setState({ anchorEl: event.target, count: 0 });
   };
   handleClose = () => {
     this.setState({ anchorEl: null });
@@ -49,11 +50,11 @@ class Notifications extends Component {
         ? (notificationsIcon = (
             <Badge
               badgeContent={
-                notifications.filter((not) => not.read === false).length
+                this.state.count
               }
               color="secondary"
             >
-              <NotificationsIcon />
+              <NotificationsIcon style={{color: 'whitesmoke'}}/>
             </Badge>
           ))
         : (notificationsIcon = <NotificationsIcon />);
@@ -90,7 +91,7 @@ class Notifications extends Component {
           )
 
           return (
-            <MenuItem key={not.createdAt}>
+            <MenuItem style={{background: not.read ? 'white' : 'beige'}} key={not.createdAt}>
               {icon}
               {content}
             </MenuItem>
@@ -105,10 +106,11 @@ class Notifications extends Component {
       <Fragment>
         <Tooltip placement="top" title="Notifications">
           <IconButton
-             style={{position: 'absolute', right: 50}}
+             style={{position: 'absolute', right: 50, color: 'whitesmoke'}}
             aria-owns={anchorEl ? 'simple-menu' : undefined}
             aria-haspopup="true"
-            onClick={this.handleOpen}
+            component={Link}
+            to={'/notifications'}
           >
             {notificationsIcon}
           </IconButton>

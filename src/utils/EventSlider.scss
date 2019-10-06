@@ -21,7 +21,6 @@
         height: 100%;
         background: rgba(0,0,0,0.3);
         position: absolute;
-        top: 0;
         z-index: 1000;
         &.prev{
             left: 0px;
@@ -61,6 +60,18 @@
   font-size: 16px;
   margin: auto;
   cursor: pointer;
+}
+
+.leftChevron {
+  position: absolute;
+  top: 34%;
+  font-size: 60px;
+}
+
+.rightChevron {
+  position: absolute;
+  top: 34%;
+  font-size: 60px;
 }
 
 .actionBtn:hover {

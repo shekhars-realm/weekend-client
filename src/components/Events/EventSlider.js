@@ -7,6 +7,9 @@ import PropTypes from 'prop-types'
 import Snackbar from '@material-ui/core/Snackbar';
 import Slide from '@material-ui/core/Slide';
 import Typography from '@material-ui/core/Typography';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+
 //redux import
 import {connect} from 'react-redux';
 import {joinEvent, leaveEvent, deleteAlert} from '../../redux/actions/dataActions'
@@ -35,17 +38,21 @@ var scollWidth = 0;
 
 
  //sizes
- var windowWidth = win.width();
- var frameWidth = win.width() - 80;
+ var windowWidth = $('.container').width() - 50;
+ var frameWidth = $('.container').width() - 80;
   if(windowWidth >= 0 && windowWidth <= 414){
-    showCount = 4;
+    showCount = 1;
 }else if(windowWidth >= 414 &&  windowWidth <= 768){
-    showCount = 5;
+    showCount = 2;
+}else if(windowWidth >= 768 &&  windowWidth <= 1400){
+    showCount = 3;
+}else if(windowWidth >= 1400 &&  windowWidth <= 1600){
+    showCount = 4;
 }else{
-    showCount = 6;
+    showCount = 5;
 }
  var videoWidth = ((windowWidth - controlsWidth * 2) / showCount );
- var videoHeight = Math.round(videoWidth / (13/9));
+ var videoHeight = Math.round(videoWidth / (13/11));
 
  var videoWidthDiff = (videoWidth * scaling) - videoWidth;
  var videoHeightDiff = (videoHeight * scaling) - videoHeight;
@@ -67,7 +74,8 @@ var scollWidth = 0;
  slide.height(videoHeight);
  slide.width(videoWidth);
  btn.height(videoHeight)
- btn.css('top', ((videoHeight * scaling) - (videoHeight))/2)
+ //btn.css('top', ((videoHeight * scaling) - (videoHeight))/2)
+ btn.css('bottom', 0)
 
  const buttonWidth = $(this).find(".wrapper").width()
 
@@ -76,27 +84,27 @@ var scollWidth = 0;
  eventCard.height(videoHeight-10)
 
  //hover effect
- $(".slide").mouseover(function() {
-     $(this).find(".actionBtn").show()
-     $(this).css("width", videoWidth * scaling);
-     $(this).css("height", videoHeight * scaling);
-     $(this).css("top", -(videoHeightDiff / 2));
-     if($(".slide").index($(this)) == 0 || ($(".slide").index($(this))) % 4 == 0){
-       // do nothing
-     }
-     else if(($(".slide").index($(this)) + 1) % 4 == 0 && $(".slide").index($(this)) != 0){
-         $(this).parent().css("margin-left", -(videoWidthDiff - controlsWidth));
-     }
-     else{
-         $(this).parent().css("margin-left", - (videoWidthDiff / 2));
-     }
- }).mouseout(function() {
-     $(this).find(".actionBtn").hide();
-     $(this).css("width", videoWidth * 1);
-     $(this).css("height", videoHeight * 1);
-     $(this).css("top", 0);
-     $(this).parent().css("margin-left", controlsWidth);
- });
+ // $(".slide").mouseover(function() {
+ //     $(this).find(".actionBtn").show()
+ //     $(this).css("width", videoWidth * scaling);
+ //     $(this).css("height", videoHeight * scaling);
+ //     $(this).css("top", -(videoHeightDiff / 2));
+ //     if($(".slide").index($(this)) == 0 || ($(".slide").index($(this))) % 4 == 0){
+ //       // do nothing
+ //     }
+ //     else if(($(".slide").index($(this)) + 1) % 4 == 0 && $(".slide").index($(this)) != 0){
+ //         $(this).parent().css("margin-left", -(videoWidthDiff - controlsWidth));
+ //     }
+ //     else{
+ //         $(this).parent().css("margin-left", - (videoWidthDiff / 2));
+ //     }
+ // }).mouseout(function() {
+ //     $(this).find(".actionBtn").hide();
+ //     $(this).css("width", videoWidth * 1);
+ //     $(this).css("height", videoHeight * 1);
+ //     $(this).css("top", 0);
+ //     $(this).parent().css("margin-left", controlsWidth);
+ // });
  // controls
  controls(frameWidth, scollWidth);
 }
@@ -107,26 +115,32 @@ function controls(frameWidth, scollWidth){
  var next = $(".next");
 
  next.on("click", function(){
-     scollWidth = scollWidth + frameWidth;
-     $('.slider-container').animate({
-         left: - scollWidth
-     }, 300, function(){
-         if(currentSliderCount >= sliderCount-1){
-             $(".slider-container").css("left", 0);
-             currentSliderCount = 0;
-             scollWidth = 0;
-         }else{
-             currentSliderCount++;
-         }
-     });
+   console.log('right clicked: ', currentSliderCount, sliderCount, scollWidth);
+     if(currentSliderCount < sliderCount) {
+       scollWidth = scollWidth + frameWidth;
+       $('.slider-container').animate({
+           left: - scollWidth
+       }, 300, function(){
+           if(currentSliderCount >= sliderCount-1){
+               $(".slider-container").css("left", 0);
+               currentSliderCount = 0;
+               scollWidth = 0;
+           }else{
+               currentSliderCount++;
+           }
+       });
+     }
  });
  prev.on("click", function(){
-     scollWidth = scollWidth - frameWidth;
-     $('.slider-container').animate({
-         left: + scollWidth
-     }, 300, function(){
-         currentSliderCount--;
-     });
+   console.log('left clicked: ', currentSliderCount, sliderCount, scollWidth);
+    if(currentSliderCount > 0) {
+      scollWidth = scollWidth - frameWidth;
+      $('.slider-container').animate({
+          left: + scollWidth
+      }, 300, function(){
+          currentSliderCount--;
+      });
+    }
      //$(".slider-container").css("left", scollWidth);
  });
 };
@@ -206,9 +220,74 @@ class EventSlider extends React.Component {
     const {locations} = this.state
     return(
         <div class="slider-frame">
-            <div class="btn prev"></div>
-            <div class="btn next"></div>
+            <div class="btn prev"><ChevronLeftIcon class='leftChevron' color='default'/></div>
+            <div class="btn next"><ChevronRightIcon class='rightChevron' color='default'/></div>
             <div class="slider-container">
+              {
+                locations.length > 0 && locations.map(event => {
+                  return <div class="slide">
+                    <EventCard event={event}/>
+                    <button
+                      onClick={() => {this.eventInfo(event.eventId, authenticated)}} variant="contained"
+                      class="actionBtn infoBtn"
+                    >
+                      Info
+                    </button>
+                  </div>
+                })
+              }
+              {
+                locations.length > 0 && locations.map(event => {
+                  return <div class="slide">
+                    <EventCard event={event}/>
+                    <button
+                      onClick={() => {this.eventInfo(event.eventId, authenticated)}} variant="contained"
+                      class="actionBtn infoBtn"
+                    >
+                      Info
+                    </button>
+                  </div>
+                })
+              }
+              {
+                locations.length > 0 && locations.map(event => {
+                  return <div class="slide">
+                    <EventCard event={event}/>
+                    <button
+                      onClick={() => {this.eventInfo(event.eventId, authenticated)}} variant="contained"
+                      class="actionBtn infoBtn"
+                    >
+                      Info
+                    </button>
+                  </div>
+                })
+              }
+              {
+                locations.length > 0 && locations.map(event => {
+                  return <div class="slide">
+                    <EventCard event={event}/>
+                    <button
+                      onClick={() => {this.eventInfo(event.eventId, authenticated)}} variant="contained"
+                      class="actionBtn infoBtn"
+                    >
+                      Info
+                    </button>
+                  </div>
+                })
+              }
+              {
+                locations.length > 0 && locations.map(event => {
+                  return <div class="slide">
+                    <EventCard event={event}/>
+                    <button
+                      onClick={() => {this.eventInfo(event.eventId, authenticated)}} variant="contained"
+                      class="actionBtn infoBtn"
+                    >
+                      Info
+                    </button>
+                  </div>
+                })
+              }
               {
                 locations.length > 0 && locations.map(event => {
                   return <div class="slide">

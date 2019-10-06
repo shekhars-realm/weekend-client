@@ -10,23 +10,31 @@ import {
   LEAVE_EVENT,
   ALERT_USER,
   DELETE_ALERT,
-  CHANGE_PARTICIPANT_STATUS
+  CHANGE_PARTICIPANT_STATUS,
+  REMOVE_PARTICIPANT,
+  RESET_EVENT_ADDED
 } from '../types';
+
+import moment from 'moment';
+import _ from 'lodash'
+
+
 const initialState = {
   eventAdded: false,
+  eventListWithDate: {},
   events: [],
   locations: [],
   eventObj: {},
   eventJoined: false,
   eventParticipants: [],
   meetingPoint: {},
-  loading: false,
+  loading: true,
   eventsJoinedInSession: [],
   alert: '',
   forums: [],
   replies: [],
   loadingforums: false,
-  loadingReplies: false
+  loadingReplies: false,
 };
 
 export default function(state = initialState, action) {
@@ -48,7 +56,8 @@ export default function(state = initialState, action) {
         locations: [
           action.payload,
           ...state.locations
-        ]
+        ],
+        eventAdded: true
       }
     case SET_USER_EVENTS:
       return {
@@ -63,11 +72,6 @@ export default function(state = initialState, action) {
         ...state,
         eventObj: action.payload
       }
-    case EVENT_ADDED:
-      return {
-        ...state,
-        eventAdded: true
-      }
     case SET_MEETING_POINT:
       return {
         ...state,
@@ -76,6 +80,9 @@ export default function(state = initialState, action) {
     case SET_LOCATIONS:
       return {
         ...state,
+        eventListWithDate: _.groupBy(action.payload.sort((a,b) => {
+          return a.date - b.date
+        }), (event) => event.date),
         locations: action.payload,
         loading: false
       }
@@ -110,6 +117,18 @@ export default function(state = initialState, action) {
           }
           return participant
         })
+      }
+    case REMOVE_PARTICIPANT:
+      return {
+        ...state,
+        eventParticipants: state.eventParticipants.filter(participant => {
+          return participant.user !== action.payload
+        })
+      }
+    case RESET_EVENT_ADDED:
+      return{
+        ...state,
+        eventAdded: false
       }
     default:
       return {

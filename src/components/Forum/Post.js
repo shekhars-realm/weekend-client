@@ -28,7 +28,8 @@ const styles = (theme) => ({
     right: 0
   },
   form: {
-    marginBottom: 50
+    marginBottom: 50,
+    padding: '0px 7px 0px 7px'
   }
 });
 
@@ -74,7 +75,7 @@ class Post extends Component {
                 fullWidth
                 onChange={this.handleChange}
               />
-              <Button type='submit' variant='contained' color='primary' className={classes.submitButton}>
+            <Button type='submit' variant='contained' color='secondary' className={classes.submitButton}>
                 Submit
               </Button>
               <Snackbar

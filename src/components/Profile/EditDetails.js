@@ -4,9 +4,10 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import MyButton from '../../utils/MyButton'
 //redux Imports
 import {connect} from 'react-redux';
-import {editUserDetails} from '../../redux/actions/userActions';
+import {editUserDetails, uploadImage} from '../../redux/actions/userActions';
 //mui Imports
 import ToolTip from '@material-ui/core/Tooltip'
+import Hidden from '@material-ui/core/Hidden'
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -27,6 +28,17 @@ const styles = (theme) => ({
     position: 'relative',
     float: 'right'
   },
+  editButton: {
+    height: 28,
+    fontSize: 11,
+    background: '#0099FF'
+  },
+  profileImage: {
+    width: 140,
+    height: 140,
+    objectFit: 'cover',
+    borderRadius: '50%'
+  }
 });
 
 class EditDetails extends Component {
@@ -67,22 +79,33 @@ class EditDetails extends Component {
   }
 
   handleSubmit = () => {
+    console.log('summbitted');
     const userDetails = {
-      bio: this.state.bio,
-      location: this.state.location,
-      website: this.state.website
+      bio: this.state.bio
     }
     this.props.editUserDetails(userDetails);
     this.handleClose();
   }
 
+  handleImageChange = (event) => {
+    console.log(event.target.files);
+    const img = event.target.files[0];
+    const formData = new FormData();
+    formData.append('image', img, img.name);
+    this.props.uploadImage(formData);
+  }
+
+  handleEditPicture = () => {
+    const fileInput = document.getElementById('userImage');
+    fileInput.click();
+  }
+
+
   render () {
     const {classes} = this.props
     return (
       <Fragment>
-        <MyButton tip='Edit Profile' onClick={this.handleOpen} btnClassName={classes.button}>
-          <Button variant='contained' color='primary'>Edit</Button>
-        </MyButton>
+        <Button className={classes.editButton} variant='contained' fullWidth onClick={this.handleOpen}  color='default'>Edit</Button>
         <Dialog
           open = {this.state.open}
           onClose={this.handleClose}
@@ -91,7 +114,12 @@ class EditDetails extends Component {
         >
           <DialogTitle>Edit your details!</DialogTitle>
           <DialogContent>
-            <form>
+            <form style={{textAlign: 'center'}}>
+              <img src={this.props.imageUrl} alt="profile" className={classes.profileImage}/>
+              <input hidden='hidden' type='file' id='userImage' onChange={this.handleImageChange}/>
+                <MyButton tip='Edit Profile Image' onClick={this.handleEditPicture} btnClassName={classes.buttons}>
+                  <EditIcon color='primary'/>
+                </MyButton>
               <TextField
                 name='bio'
                 type='text'
@@ -103,26 +131,6 @@ class EditDetails extends Component {
                 className={classes.textField}
                 onChange={this.handleChange}
                 value={this.state.bio}
-              />
-              <TextField
-                name='website'
-                type='text'
-                label='Website'
-                fullWidth
-                palceholder='Your personal/professional website'
-                className={classes.textField}
-                onChange={this.handleChange}
-                value={this.state.website}
-              />
-              <TextField
-                name='location'
-                type='text'
-                label='Location'
-                fullWidth
-                palceholder='Where do you live!'
-                className={classes.textField}
-                onChange={this.handleChange}
-                value={this.state.location}
               />
             </form>
           </DialogContent>
@@ -142,11 +150,12 @@ class EditDetails extends Component {
 
 EditDetails.propTypes = {
   editUserDetails: PropTypes.func.isRequired,
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  uploadImage: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => ({
   credentials: state.user.credentials
 })
 
-export default connect(mapStateToProps, {editUserDetails})(withStyles(styles)(EditDetails));
+export default connect(mapStateToProps, {editUserDetails, uploadImage})(withStyles(styles)(EditDetails));

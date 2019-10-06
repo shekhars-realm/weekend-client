@@ -55,6 +55,7 @@ class EventCard extends React.Component {
           event.map(val => {
             return (
               <div class="wrapper">
+                <img src={event.userImage} class='hostImage'/>
                 <Link to={authenticated ? '/event/'+val.eventId : '/login'}>
                   <p href="#" class="meetup">{val.name}</p>
                 </Link>

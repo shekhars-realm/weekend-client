@@ -5,7 +5,7 @@ import userReducer from './reducers/userReducer';
 import dataReducer from './reducers/dataReducer';
 import uiReducer from './reducers/uiReducer';
 import forumReducer from './reducers/forumReducer';
-
+import momentReducer from './reducers/momentReducer';
 const initialState={
 
 }
@@ -28,6 +28,7 @@ const reducers = combineReducers({
     user: userReducer,
     data: dataReducer,
     forum: forumReducer,
+    moment: momentReducer,
     UI: uiReducer
 });
 

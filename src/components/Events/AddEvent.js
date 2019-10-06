@@ -4,6 +4,8 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import MyButton from '../../utils/MyButton';
 import TagSuggestions from  '../../utils/TagSuggestions'
 import {Redirect} from 'react-router-dom';
+import axios from 'axios'
+import $ from 'jquery'
 //Muiimports
 import 'date-fns';
 import CheckedIconOutlined from '@material-ui/icons/CheckCircleOutline';
@@ -27,6 +29,7 @@ import DateFnsUtils from '@date-io/date-fns';
 //icons import
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
+import WifiTethering from '@material-ui/icons/WifiTethering';
 //redux Imports
 import {connect} from 'react-redux';
 import {addEvent,clearErrors, verifyLocation} from '../../redux/actions/dataActions';
@@ -37,7 +40,7 @@ const styles = (theme) => ({
   },
   submitButton: {
     position: 'relative',
-    float: 'right'
+    bottom: 0
   },
   progressSpinner: {
     position: 'absolute'
@@ -80,9 +83,11 @@ const styles = (theme) => ({
     margin: 10
   },
   addevent: {
-    position: 'absolute',
-    left: '50%',
-    border: '3px solid white',
+    position: 'fixed',
+    right: 30,
+    bottom: 30,
+    borderRadius: '50%',
+    border: '2px solid white',
     padding: 5
   }
 });
@@ -122,7 +127,8 @@ class AddEvent extends Component {
         tags: [],
         queryLocation: '',
         headCount: 0,
-        errors: {}
+        errors: {},
+        openLocation: false
       })
     }
   }
@@ -136,6 +142,7 @@ class AddEvent extends Component {
   handleClose = () => {
     this.props.clearErrors();
     this.setState({open: false, errors: {}})
+    if(this.props.closePopup) this.props.closePopup()
   }
   handleChange = (event) => {
     this.setState({
@@ -151,8 +158,8 @@ class AddEvent extends Component {
   handleSubmit = (event) => {
     event.preventDefault();
     const newEvent = {
-      name: this.state.name,
-      description: this.state.description,
+      name: this.state.name.toLowerCase(),
+      description: this.state.description.toLowerCase(),
       location: this.state.location,
       headCount: this.state.headCount,
       //tags: this.state.tags,
@@ -164,12 +171,22 @@ class AddEvent extends Component {
    this.props.addEvent(newEvent);
   }
   getUserLocation() {
-    navigator.geolocation.getCurrentPosition((position) => {
-      let location = {}
-      location.lat = position.coords.latitude;
-      location.lng = position.coords.longitude;
-      this.setState({location});
+    navigator.geolocation.getCurrentPosition(this.getlocationSuccess, this.getLocationError)
+  }
+  getlocationSuccess = (pos) => {
+    delete axios.defaults.headers.common["Authorization"];
+    axios.get("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + pos.coords.latitude + "," + pos.coords.longitude + "&sensor=true&key=" + process.env.REACT_APP_API_KEY).then(res => {
+      console.log('location success');
+      axios.defaults.headers.common['Authorization'] = localStorage.getItem('FBIdToken');
+      if(res.data.results.length > 0) {
+        this.setState({queryLocation:  res.data.results[0].formatted_address})
+      }
+    }).catch(err => {
+
     })
+  }
+  getLocationError = (err) => {
+    this.setState({openLocation: true})
   }
   selectedTags = (tags) => {
     this.setState({tags})
@@ -181,13 +198,13 @@ class AddEvent extends Component {
     const {classes, UI: {loading}, userLocation} = this.props;
     return (
       <Fragment>
-        <MyButton tip='Add Event' onClick={this.handleOpen}>
-          <AddIcon btnClassName={classes.addevent} color='primary'/>
-        </MyButton>
+        <Button style={{fontSize: 18}} variant='fab' onClick={this.handleOpen}>
+          Add Event
+        </Button>
         <Dialog
           open={this.state.open}
           onClose={this.handleClose}
-          fullWidth
+          fullScreen={$(window).width() < 600 ? true : false}
           maxWidth='md'
         >
           <MyButton tip='Close' onClick={this.handleClose} btnClassName={classes.closeButton}>
@@ -195,7 +212,7 @@ class AddEvent extends Component {
           </MyButton>
           <DialogTitle>{'Add an event!'}</DialogTitle>
           <DialogContent>
-            {this.state.errors.overlapped ? <Typography variant='body6' color='primary'>{this.state.errors.overlapped}</Typography> : null}
+            {this.state.errors.overlapped ? <Typography variant='body6' color='secondary'>{this.state.errors.overlapped}</Typography> : null}
             <form onSubmit={this.handleSubmit}>
               <Grid container spacing={6}>
                 <Grid item xs={12} sm={4}>
@@ -210,7 +227,8 @@ class AddEvent extends Component {
                     error={this.state.errors.name ? true : false}
                     helperText={this.state.errors.name}
                     name="name"
-                    placeholder= 'Name of event'
+                    inputProps={{ maxLength: 50 }}
+                    placeholder= 'Be subtle and clear'
                   />
                   <TextField
                   id="outlined-multiline-static"
@@ -221,7 +239,7 @@ class AddEvent extends Component {
                   fullWidth
                   name='description'
                   rows="8"
-                  placeholder= 'Description'
+                  placeholder= 'Explain your event'
                   margin="normal"
                   variant="outlined"
                   />
@@ -246,7 +264,7 @@ class AddEvent extends Component {
                       helperText={this.state.errors.location}
                     />
                     <Divider style={{margin: 20}}/>
-                    <Button variant='contained' color='primary' onClick={this.getUserLocation}>{'My Location'}</Button>
+                    <Button variant='contained' color='secondary' onClick={this.getUserLocation}>{'My Location'}</Button>
                   </div>
                 </Grid>
                 <Grid item xs={12} sm={4}>
@@ -305,12 +323,28 @@ class AddEvent extends Component {
                   </MuiPickersUtilsProvider>
                 </Grid>
               </Grid>
-              <Button type='submit' variant='contained' color='primary' className={classes.submitButton} disabled={loading}>
+              <Button fullWidth type='submit' variant='contained' color='secondary' className={classes.submitButton} disabled={loading}>
                 Submit
                 {loading && <CircularProgress size={30} className={classes.progressSpinner}/>}
               </Button>
             </form>
           </DialogContent>
+        </Dialog>
+        <Dialog
+          open={this.state.openLocation}
+          onClose={() => {this.setState({openLocation: false})}}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{"Location access denied!"}</DialogTitle>
+          <DialogContent>
+            {'You have blocked Spinzer from accessing your location.'}
+            <br/>
+            {'Try giving a location address mannualy.'}
+          </DialogContent>
+          <DialogActions>
+            <Button color='secondary' onClick={() => {this.setState({openLocation: false})}}>Alright!</Button>
+          </DialogActions>
         </Dialog>
       </Fragment>
     )

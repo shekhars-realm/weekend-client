@@ -12,13 +12,24 @@ import {
   SET_USER_FILTER,
   SET_LOADED_USER,
   MARK_NOTIFICATIONS_READ,
-  DELETE_NOTIFICATION
+  DELETE_NOTIFICATION,
+  ADD_AS_FOLLOWER,
+  SWITCH_PRIVATE_USER,
+  NEW_PROFILE_IMAGE,
+  UPDATE_USER_BIO,
+  SENT_FOLLOW_REQUEST,
+  REMOVE_FOLLOW_REQUEST,
+  GET_NOTIFICATIONS,
+  SET_NOTIFICATIONS,
+  ADD_LIKE_ARRAY,
+  REMOVE_LIKE_ARRAY
 } from '../types';
 
 const initialState = {
     authenticated: false,
     loading: false,
     sameUserLoaded: false,
+    loadingNotifications: true,
     loadedUser: {
 
     },
@@ -29,6 +40,10 @@ const initialState = {
 
     },
     notifications: [],
+    followRequests: [],
+    likes: [],
+    loadedUserFollowers: [],
+    loadedUserFollowing: [],
     filter: {
 
     }
@@ -83,16 +98,30 @@ export default function(state = initialState, action) {
               sameUserLoaded: action.payload.credentials.handle === state.loadedUser.handle ? true : false,
               authenticated: true,
               loading: false,
-              credentials: action.payload.credentials,
-              notifications: action.payload.notifications
+              likes: action.payload.likes,
+              credentials: action.payload.credentials
             };
         case SET_LOADED_USER:
           action.payload.schedule = createSchedule(new Date(), action.payload.schedule)
           return {
             ...state,
             sameUserLoaded: action.payload.handle === state.credentials.handle ? true : false,
+            loadedUserFollowers: action.payload.followers,
+            loadedUserFollowing: action.payload.following,
             loading: false,
             loadedUser: action.payload
+          }
+        case NEW_PROFILE_IMAGE:
+          state.credentials.imageUrl = action.payload
+          if(state.sameUserLoaded) state.loadedUser.imageUrl = action.payload
+          return{
+            ...state
+          }
+        case UPDATE_USER_BIO:
+          state.credentials.bio = action.payload
+          if(state.sameUserLoaded) state.loadedUser.bio = action.payload
+          return{
+            ...state
           }
         case SET_USER_FILTER:
           return {
@@ -112,6 +141,59 @@ export default function(state = initialState, action) {
           })
           return {
             ...state
+          }
+        case MARK_NOTIFICATIONS_READ:
+          state.notifications.forEach((not) => (not.read = true));
+          return {
+            ...state
+          };
+        case SWITCH_PRIVATE_USER:
+        state.credentials.privateUser = action.payload
+          return{
+            ...state
+          }
+        case ADD_AS_FOLLOWER:
+          state.loadedUserFollowers.push(action.payload)
+          state.loadedUser.btnAction = 'Following'
+          state.loadedUser.isFollowing = true
+          return{
+            ...state
+          }
+        case SENT_FOLLOW_REQUEST:
+        state.credentials.sentFollowRequests.push(action.payload)
+        state.loadedUser.btnAction = 'Cancel request'
+        return{
+            ...state
+          }
+        case REMOVE_FOLLOW_REQUEST:
+          let index = state.followRequests.findIndex(request => {
+            return request.requestId === action.payload.requestId
+          })
+          state.followRequests.splice(index, 1)
+          return{
+            ...state
+          }
+        case GET_NOTIFICATIONS:
+          return{
+            ...state,
+            loadingNotifications: true
+          }
+        case SET_NOTIFICATIONS:
+          return{
+            ...state,
+            loadingNotifications: false,
+            notifications: [...state.notifications, ...action.payload.notifications],
+            followRequests: action.payload.followRequests
+          }
+        case ADD_LIKE_ARRAY:
+        state.likes.push(action.payload)
+          return{
+            ...state,
+          }
+        case REMOVE_LIKE_ARRAY:
+          return{
+            ...state,
+            likes: state.likes.filter(id => id !== action.payload)
           }
         default:
             return state;

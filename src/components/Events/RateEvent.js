@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import moment from 'moment';
-import dayjs from 'dayjs';
 import {Link} from 'react-router-dom';
+import $ from 'jquery'
 //mui imports
 import {withStyles} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -15,11 +15,13 @@ import Grid from '@material-ui/core/Grid';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
+import MyButton from '../../utils/MyButton';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Snackbar from '@material-ui/core/Snackbar';
 import Rating from '@material-ui/lab/Rating';
 import Tooltip from '@material-ui/core/Tooltip';
 import Checkbox from '@material-ui/core/Checkbox';
+import CloseIcon from '@material-ui/icons/Close';
 //redux imports
 import {connect} from 'react-redux';
 import {deleteNotification} from '../../redux/actions/userActions';
@@ -27,7 +29,11 @@ import {deleteNotification} from '../../redux/actions/userActions';
 const styles = theme => ({
   feedbackRow: {
     marginBottom: 20
-  }
+  },
+  closeButton: {
+    position: 'absolute',
+    right: 0
+  },
 })
 
 const labels = {
@@ -116,12 +122,12 @@ class RateEvent extends React.Component {
   }
   render() {
     const {classes, not} = this.props;
-    const time = dayjs(not.startTime).fromNow();
+    const time = moment(not.startTime).fromNow();
     return (
       <div>
         <Typography
           color="default"
-          variant="body1"
+          variant="body2"
           onClick={this.handleOpen}
         >
           {`${not.sender} needs your feedback!`}
@@ -130,24 +136,28 @@ class RateEvent extends React.Component {
           open={this.state.open}
           fullWidth='sm'
           scroll='body'
+          fullScreen={$(window).width() < 600 ? true : false}
           onClose={this.handleClose}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
+          <MyButton tip='Close' onClick={this.handleClose} btnClassName={classes.closeButton}>
+            <CloseIcon color='secondary'/>
+          </MyButton>
           <DialogTitle id="alert-dialog-title">{'Your Feedback'}</DialogTitle>
           <DialogContent>
             <Grid className={classes.feedbackRow} container spacing={0}>
               <Grid item sm={2} xs={3}>Event: </Grid>
               <Grid item sm={10} xs={9}>{not.eventName}</Grid>
               <br/>
-              <Grid item sm={2} xs={3}>Organiser: </Grid>
+              <Grid item sm={2} xs={3}>Host: </Grid>
               <Grid item sm={10} xs={9}><Link to={'/profile/'+not.sender}>{not.sender}</Link></Grid>
               <br/>
               <Grid item sm={2} xs={3}>Date: </Grid>
               <Grid item sm={10} xs={9}>{moment(not.startTime).format('LLLL')}</Grid>
               <Grid item sm={12} xs={12}><Divider style={{margin: '5px 0px 5px 0px'}}/></Grid>
               <Grid item sm={4}>
-                <Typography color='primary'>How much fun did you had?</Typography>
+                <Typography color='secondary'>How much fun did you had?</Typography>
               </Grid>
               <Grid item sm={8}>
                 <Rating
@@ -162,7 +172,7 @@ class RateEvent extends React.Component {
             </Grid>
             <Grid className={classes.feedbackRow} container spacing={0}>
               <Grid item sm={4}>
-                <Typography color='primary'>How well planned the event was?</Typography>
+                <Typography color='secondary'>How well planned the event was?</Typography>
               </Grid>
               <Grid item sm={8}>
                 <Rating
@@ -177,7 +187,7 @@ class RateEvent extends React.Component {
             </Grid>
             <Grid className={classes.feedbackRow} container spacing={0}>
               <Grid item sm={4}>
-                <Typography color='primary'>How interactive was the event?</Typography>
+                <Typography color='secondary'>How interactive was the event?</Typography>
               </Grid>
               <Grid item sm={8}>
                 <Rating
@@ -215,14 +225,14 @@ class RateEvent extends React.Component {
             </Typography>
             <br/>
             {
-              this.state.error !== '' && <Typography variant='caption' color='primary'>{this.state.error}</Typography>
+              this.state.error !== '' && <Typography variant='caption' color='secondary'>{this.state.error}</Typography>
             }
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClose} color="primary">
+            <Button onClick={this.handleClose} color="secondary">
               Later
             </Button>
-            <Button variant='contained' onClick={this.handleSubmit} color="primary">
+            <Button variant='contained' onClick={this.handleSubmit} color="secondary">
               Submit
             </Button>
           </DialogActions>

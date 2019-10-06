@@ -26,6 +26,8 @@ const styles = theme => ({
   root: {
     width: '100%',
     overflowX: 'auto',
+    background: 'none',
+    boxShadow: 'none'
   },
   table: {
     minWidth: '100%',
@@ -34,7 +36,7 @@ const styles = theme => ({
     display: 'block'
   },
   eventCell: {
-    background: theme.palette.primary.main,
+    background: theme.palette.secondary.main,
     borderRadius: 5,
     marginBottom: 5,
     textAlign: 'center',
@@ -42,27 +44,29 @@ const styles = theme => ({
   },
   eventName: {
     color: 'white',
-    fontSize: 28,
+    fontSize: 15,
     fontWeight: 700
   },
   eventTime: {
-    fontSize: 22,
+    fontSize: 14,
     fontWeight: 700,
     color: 'black'
   },
   weekDay: {
-    fontSize: 25,
-    width: 100,
-    fontWeight: 700
+    fontSize: 15,
+    width: 120,
+    fontWeight: 700,
+    padding: 0
   },
   heading: {
-    fontSize: 30,
+    fontSize: 17,
     textAlign: 'center',
     fontWeight: 700
   },
   expansionSummary: {
-    background: theme.palette.primary.main,
-    fontSize: 25,
+    background: theme.palette.secondary.main,
+    height: '40px !important',
+    minHeight: 0,
     color: 'white',
     borderRadius: 5
   }
@@ -79,7 +83,7 @@ class Schedule extends React.Component {
     const plan = !loading ? <Paper className={classes.root}>
       <div className={classes.heading}>
         {
-          sameUserLoaded ? "Your schedule" : handle+"'s schedule"
+          sameUserLoaded ? "This week" : handle+"'s schedule"
         }
       </div>
       <Table className={classes.table}>
@@ -88,7 +92,7 @@ class Schedule extends React.Component {
             schedule && schedule.map((row, index) => (
               <TableRow key={index}>
                 <TableCell className={classes.weekDay} component= "th" scope="row">
-                  {moment(new Date(row.weekDay)).format('dddd')}
+                  {moment(new Date(row.weekDay)).format('dddd, MMMM Do')}
                 </TableCell>
                 <TableCell align='left'>
                 <div className={classes.eventList}>
@@ -101,9 +105,9 @@ class Schedule extends React.Component {
                           aria-controls="panel1a-content"
                           id="panel1a-header"
                         >
-                          <Typography variant='h6'>{row.events.length} events</Typography>
+                          <Typography variant='body2'>{row.events.length} events</Typography>
                         </ExpansionPanelSummary>
-                        <ExpansionPanelDetails>
+                        <ExpansionPanelDetails style={{padding: 3, display: 'block'}}>
                           {
                             row.events.map(event => {
                               return (
@@ -124,7 +128,7 @@ class Schedule extends React.Component {
                       </ExpansionPanel>
                     ) : (
                       sameUserLoaded ? <Link to='/'>
-                        <Button fullWidth variant='contained' color='secondary'>
+                        <Button fullWidth color='secondary'>
                           {'Search for events'}
                         </Button>
                       </Link> : <Button fullWidth disabled={true} variant='contained' color='secondary'>

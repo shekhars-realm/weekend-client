@@ -6,6 +6,7 @@ import dayjs from 'dayjs';
 import EditDetails from './EditDetails';
 import MyButton from '../../utils/MyButton'
 import ProfileSkeleton from '../../utils/ProfileSkeleton';
+import ProfileAction from './ProfileAction';
 //mui Imports
 import Rating from '@material-ui/lab/Rating';
 import Paper from '@material-ui/core/Paper';
@@ -21,6 +22,7 @@ import {connect} from 'react-redux';
 import {logoutUser, uploadImage, getLoadedUser} from '../../redux/actions/userActions';
 //import icons
 import LocationOn from '@material-ui/icons/LocationOn';
+import SettingsApplications from '@material-ui/icons/SettingsApplications';
 import LinkIcon from '@material-ui/icons/Link';
 import CalendarToday from '@material-ui/icons/CalendarToday';
 import EditIcon from '@material-ui/icons/Edit';
@@ -78,6 +80,20 @@ const styles = theme => ({
    borderRadius: 5,
    color: 'white',
    marginBottom: 10
+ },
+ profileSettingIcon: {
+   position: 'absolute',
+    top: 0,
+    right: 0,
+    fontSize: 35,
+    color: theme.palette.primary.main
+ },
+ profileScheduler: {
+   position: 'absolute',
+    top: 0,
+    left: 0,
+    fontSize: 35,
+    color: theme.palette.primary.main
  }
 });
 
@@ -92,6 +108,7 @@ class Profile extends React.Component {
   }
 
   handleImageChange = (event) => {
+    console.log(event.target.files);
     const img = event.target.files[0];
     const formData = new FormData();
     formData.append('image', img, img.name);
@@ -143,12 +160,10 @@ class Profile extends React.Component {
           <div className="image-wrapper">
             <img src={loadedUser.imageUrl} alt="profile" className='profile-image'/>
             {
-              sameUserLoaded ? <input hidden='hidden' type='file' id='userImage' onChange={this.handleImageChange}/> : null
+              !sameUserLoaded ? <ProfileAction/> : <a href='/settings'><SettingsApplications className={classes.profileSettingIcon} user={loadedUser.handle}/></a>
             }
             {
-              sameUserLoaded ? <MyButton tip='Edit Profile Image' onClick={this.handleEditPicture} btnClassName={classes.buttons}>
-                <EditIcon color='primary'/>
-              </MyButton> : null
+              sameUserLoaded ? <CalendarToday className={classes.profileScheduler}/> : null
             }
           </div>
           <hr/>

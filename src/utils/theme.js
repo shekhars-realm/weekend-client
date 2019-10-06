@@ -2,20 +2,31 @@ export default {
   palette: {
     primary: {
       light: '#33c9dc',
-      main: '#ed1c40',
+      main: '#404040',
       dark: '#008394',
       contrastText: '#fff'
     },
     secondary: {
       light: '#ff6333',
-      main: '#4CAF50',
+      main: '#f95700',
       dark: '#b22a00',
       contrastText: '#fff'
     }
   },
   typography: {
-    useNextVariants: true
+    useNextVariants: true,
+    fontFamily: "\Open Sans\", sans-serif",
+    color: 'black'
   },
+  datePicker: {
+      color: '#f95700',
+      textColor: '#f95700',
+      calendarTextColor: '#f95700',
+      selectColor: '#f95700',
+      selectTextColor:'#f95700',
+      calendarYearBackgroundColor: '#f2f2f2',
+      headerColor: '#f2f2f2',
+    },
   form: {
     textAlign: 'center'
   },

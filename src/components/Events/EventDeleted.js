@@ -29,7 +29,7 @@ class EventDeleted extends React.Component {
       <div>
         <Typography
           color="default"
-          variant="body1"
+          variant="body2"
           onClick={this.handleOpen}
         >
           {'An event has been deleted '} {time}

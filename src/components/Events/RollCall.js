@@ -2,6 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import MemberCard from './MemberCard'
 import _ from 'lodash';
+import $ from 'jquery';
+import MyButton from '../../utils/MyButton';
 //mui imports
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -11,13 +13,14 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import {withStyles} from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
+import CloseIcon from '@material-ui/icons/Close';
 import Grid from '@material-ui/core/Grid';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 const styles = theme => ({
-
+closeButton: {position: 'absolute', right: 0}
 })
 
 class RollCall extends React.Component {
@@ -64,14 +67,18 @@ class RollCall extends React.Component {
         open={this.state.open}
         onClose={this.handleClose}
         scroll={'body'}
+        fullScreen={$(window).width() < 600 ? true : false}
         aria-labelledby="scroll-dialog-title"
       >
+        <MyButton tip='Close' onClick={this.handleClose} btnClassName={classes.closeButton}>
+          <CloseIcon color='secondary'/>
+        </MyButton>
         <DialogTitle id="scroll-dialog-title">
           {'Roll-Call'}
           <br/>
           <Typography variant='caption'>Mark the participants who were actually  present in this event to get reviews.</Typography>
         </DialogTitle>
-        <DialogContent>
+        <DialogContent style={{padding: 0}}>
           {
             participants.map(participant => {
               return (
@@ -80,11 +87,6 @@ class RollCall extends React.Component {
             })
           }
         </DialogContent>
-        <DialogActions>
-          <Button onClick={this.handleClose} color="primary">
-            Cancel
-          </Button>
-        </DialogActions>
       </Dialog>
     </div>
   )

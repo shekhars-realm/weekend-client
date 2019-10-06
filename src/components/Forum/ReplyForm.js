@@ -15,7 +15,6 @@ const styles = theme => ({
   replyForm: {
     display: 'flex',
     width: '100%',
-    marginTop: 20
   }
 })
 

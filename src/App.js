@@ -12,15 +12,25 @@ import {logoutUser, getUserData} from './redux/actions/userActions';
 //Mui improts
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
+import Hidden from '@material-ui/core/Hidden';
 //pages import
+import AddSpeedDial from './components/Dialogs/AddSpeedDial'
 import home from './pages/home';
+import feed from './pages/feed';
+import notifications from './pages/notifications';
 import login from './pages/login';
+import resetpwd from './pages/resetpwd';
 import signup from './pages/signup';
 import profile from './pages/profile';
+import moment from './pages/moment';
 import chat from './pages/chat';
+import requests from './pages/requests';
 import event from './pages/event';
+import setting from './pages/settings'
 //components
 import Navbar from './components/Layout/Navbar'
+import ControlFooter from './components/Layout/ControlFooter'
+import Footer from './components/Layout/Footer'
 import AuthRoute from './utils/AuthRoute'
 
 require('dotenv').config()
@@ -58,9 +68,15 @@ function App() {
             <Switch>
               <Route exact path='/' component={home}/>
               <AuthRoute exact path='/login' component={login}/>
+              <AuthRoute exact path='/resetpassword' component={resetpwd}/>
               <AuthRoute exact path='/signup' component={signup}/>
               <AuthRoute exact path='/event/:eventId' component={event}/>
               <AuthRoute exact path="/profile/:handle" component={profile}/>
+              <AuthRoute exact path="/settings" component={setting}/>
+              <AuthRoute exact path="/feed" component={feed}/>
+              <AuthRoute exact path="/requests" component={requests}/>
+              <AuthRoute exact path="/notifications" component={notifications}/>
+              <AuthRoute exact path="/moment/:momentId" component={moment}/>
               <AuthRoute
                 exact
                 path='/event/:eventId/forum/:forumId'
@@ -68,6 +84,7 @@ function App() {
               />
             </Switch>
           </div>
+          {/*<Footer/>*/}
         </Router>
       </Provider>
     </MuiThemeProvider>

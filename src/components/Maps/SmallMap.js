@@ -9,6 +9,10 @@ import mapStyles from '../../utils/mapStyle'
 
 class SmallMap extends React.Component {
 
+  shouldComponentUpdate() {
+    return false
+  }
+
   render () {
     let iconMarker = new window.google.maps.MarkerImage(
               `/images/mapIcon.jpg`,

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {Fragment} from 'react'
 import PropTypes from 'prop-types'
 import SmallMap from '../components/Maps/SmallMap'
 import {Link} from 'react-router-dom';
@@ -6,8 +6,12 @@ import Post from '../components/Forum/Post'
 import List from '../components/Forum/List'
 import RollCall from '../components/Events/RollCall';
 import DeleteEvent from '../components/Events/DeleteEvent'
+import RemoveParticipant from '../components/Dialogs/RemoveParticipant';
+import ShareEvent from '../components/Dialogs/ShareEvent';
+import Navbar from '../components/Layout/Navbar'
 //mui imports
 import Snackbar from '@material-ui/core/Snackbar';
+import Hidden from '@material-ui/core/Hidden';
 import {withStyles} from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Slide from '@material-ui/core/Slide';
@@ -15,6 +19,8 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Divider from '@material-ui/core/Divider';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 //redux imports
 import {connect} from 'react-redux';
 import {getEvent, joinEvent, leaveEvent, deleteAlert} from '../redux/actions/dataActions'
@@ -28,7 +34,7 @@ const styles = (theme) => ({
     textAlign: 'center'
   },
   eventName: {
-    fontSize: 60,
+    fontSize: 40,
     fontWeight: 700,
   },
   distanceText: {
@@ -36,44 +42,51 @@ const styles = (theme) => ({
     fontWeight: 400
   },
   eventTime: {
-    fontSize: 30,
+    fontSize: 20,
     fontWeight: 600,
-    background: theme.palette.primary.main,
+    background: theme.palette.secondary.main,
     color: 'white',
     borderRadius: 5,
     padding: '5px 0px 8px 0px',
-    marginTop: 30
+    marginTop: 10
   },
   eventDescription: {
-    fontSize: 40
+    fontSize: 20
   },
   userImage: {
     margin: 10,
     height: 50,
     objectFit: 'cover',
     width: 50,
-    borderRadius: '50%'
+    borderRadius: '50%',
+    cursor: 'pointer'
   },
   username: {
-    color: theme.palette.primary.main
+    color: theme.palette.secondary.main
   },
   eventOrganizer: {
-    float: 'right',
-    display: 'flex'
+    fontSize: 16,
+    fontWeight: 400
   },
   participantsImg: {
     display: 'flex'
   },
   subtitleText: {
-    color: theme.palette.primary.main,
-    fontSize: 30
+    fontSize: 20
   },
   participants: {
-    marginTop: 30
+    margin: '30px 0px 10px 0px',
+    display: 'block',
+    textAlign: 'center'
   },
   actionButton: {
     width: '30%',
-    marginTop: 30
+    margin: '10px 5px 0px 5px'
+  },
+  eventLocation: {
+    textAlign: 'center',
+    display: 'grid',
+    marginTop: 10
   }
 })
 
@@ -88,7 +101,10 @@ class Event extends React.Component {
     this.state={
       alert:{},
       locations: this.props.locations,
-      updateEvents: false
+      updateEvents: false,
+      anchorEl: null,
+      selectedParticipant: null,
+      selectedParticipantImg: ''
     }
   }
 
@@ -100,8 +116,25 @@ class Event extends React.Component {
     this.props.getEvent(this.props.match.params.eventId);
     console.log(this.props.match.params);
   }
-
-
+  memberClicked = (user, userImage, event) => {
+    if(this.props.eventObj.user === this.props.handle) {
+      this.setState({
+        anchorEl: event.currentTarget,
+        selectedParticipant: user,
+        selectedParticipantImg: userImage
+      })
+    } else {
+      this.props.history.push('/profile/'+user)
+    }
+  }
+  handleCloseMenu = () => {
+    this.setState({
+      anchorEl: null
+    })
+  }
+  openParticipantProfile = () => {
+    this.props.history.push('/profile/'+this.state.selectedParticipant)
+  }
   render () {
     console.log(this.props);
     const {classes, loading, eventObj, handle, eventJoined, alert, eventParticipants} = this.props
@@ -110,26 +143,23 @@ class Event extends React.Component {
          })
     console.log(checkParticipantStatus ,  eventParticipants.length > 0 , eventObj.user === handle, eventObj.endTime < new Date().toISOString());
     let showRollCall = !checkParticipantStatus &&  eventParticipants.length > 0 && eventObj.user === handle && eventObj.endTime < new Date().toISOString();
-    const eventDetails = loading ? <CircularProgress size={200} thickness={2} className={classes.progressSpinner}/> : (
+    const eventDetails = loading ? <CircularProgress color='secondary' size={100} thickness={2} className={classes.progressSpinner}/> : (
       <Grid container spacing={0}>
-        <Grid item sm={3} xs={12}>
-          <SmallMap location={eventObj.geoPoint}/>
-        </Grid>
+        <Hidden smDown>
+          <Grid item sm={3}>
+            <SmallMap location={eventObj.geoPoint}/>
+          </Grid>
+        </Hidden>
         <Grid item sm={6} xs={12}>
           <div className={classes.eventDetails}>
             <div className={classes.eventName}>
-              {eventObj.name}
-            </div>
-            <div className={classes.eventOrganizer}>
-              created by:
-              <p className={classes.username}>
+              <p>{eventObj.name}</p>
+              <p className={classes.eventOrganizer}>
+                {'created by '}
                 <Link to={'/profile/'+eventObj.user}>
                   @{eventObj.user}
                 </Link>
               </p>
-              {
-                //<img src={eventObj.userImage} className={classes.userImage}/>
-              }
             </div>
             <div className={classes.eventTime}>
               {new Date(eventObj.startTime).toLocaleString()}
@@ -137,13 +167,29 @@ class Event extends React.Component {
             <div className={classes.eventDescription}>
               {eventObj.description}
             </div>
+            <Hidden mdUp>
+              <div className={classes.eventLocation}>
+                <span>at</span>
+                  {
+                    eventObj.geoPoint ? <a href={'https://maps.google.com/maps?z=10&t=m&q=loc:' + eventObj.geoPoint._latitude + '+' + eventObj.geoPoint._longitude} target="_blank">{
+                      eventObj.address ? eventObj.address : 'Directions'
+                    }</a> : null
+                  }
+              </div>
+            </Hidden>
             {
-              eventObj.user === handle ? (
+              // eventObj.user === handle ? null : <Button className={classes.actionButton} color='secondary'>Report</Button>
+            }
+            {
+              eventObj.user === handle && eventObj.startTime > new Date().toISOString() ? (
                 <DeleteEvent eventId={eventObj.eventId} history={this.props.history}/>
               ) : (
-                eventJoined ? <Button disabled={eventObj.startTime < new Date().toISOString()} className={classes.actionButton} variant='contained' color='primary' onClick={() => {this.props.leaveEvent(eventObj.eventId)}}>Leave</Button> :
+                eventJoined ? <Button disabled={eventObj.startTime < new Date().toISOString()} className={classes.actionButton} variant='contained' color='secondary' onClick={() => {this.props.leaveEvent(eventObj.eventId)}}>Leave</Button> :
                 <Button disabled={eventObj.startTime < new Date().toISOString()} className={classes.actionButton} variant='contained' color='secondary' onClick={() => {this.props.joinEvent(eventObj.eventId)}}>Join</Button>
               )
+            }
+            {
+              eventObj.endTime > new Date().toISOString() ? <ShareEvent eventId={eventObj.eventId}/> : null
             }
             <div className={classes.participants}>
               <p className={classes.subtitleText}>
@@ -157,9 +203,7 @@ class Event extends React.Component {
               {
                 eventParticipants && eventParticipants.map((participant) => {
                   return(
-                    <Link to={'/profile/'+participant.user}>
-                      <img alt={participant.user} title={participant.user} src={participant.userImage} className={classes.userImage}/>
-                    </Link>
+                      <img onClick={(event) => {this.memberClicked(participant.user, participant.userImage, event)}} alt={participant.user} title={participant.user} src={participant.userImage} className={classes.userImage}/>
                   )
                 })
               }
@@ -171,8 +215,10 @@ class Event extends React.Component {
             <div className={classes.discussionPanel}>
               <p className={classes.subtitleText}>Forum</p>
               <Divider/>
-              <Post eventId={eventObj.eventId}/>
-              <List forumIdParam={this.props.match.params.forumId ? this.props.match.params.forumId : null}/>
+              {
+                eventObj.endTime > new Date().toISOString() ? <Post eventId={eventObj.eventId}/> : null
+              }
+              <List showReplyForm={eventObj.endTime > new Date().toISOString() ? true : false} forumIdParam={this.props.match.params.forumId ? this.props.match.params.forumId : null}/>
             </div>
           </div>
         </Grid>
@@ -187,9 +233,24 @@ class Event extends React.Component {
           }}
           message={<span id="message-id">{alert}</span>}
         />
+        <Menu
+          id="simple-menu"
+          anchorEl={this.state.anchorEl}
+          keepMounted
+          open={Boolean(this.state.anchorEl)}
+          onClose={this.handleCloseMenu}
+        >
+          <MenuItem onClick={this.openParticipantProfile}>Profile</MenuItem>
+          {
+            eventObj.startTime > new Date().toISOString() ? <MenuItem ><RemoveParticipant user={this.state.selectedParticipant} eventId={eventObj.eventId} userImage={this.state.selectedParticipantImg}/></MenuItem> : null
+          }
+        </Menu>
       </Grid>
     )
-    return <div style={{textAlign: 'center'}}>{eventDetails}</div>;
+    return <Fragment>
+      <Navbar/>
+      <div style={{textAlign: 'center'}}>{eventDetails}</div>
+    </Fragment>;
   }
 }
 

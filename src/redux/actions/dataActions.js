@@ -18,7 +18,10 @@ import {
   JOIN_EVENT,
   LEAVE_EVENT,
   ALERT_USER,
-  CHANGE_PARTICIPANT_STATUS
+  CHANGE_PARTICIPANT_STATUS,
+  REMOVE_PARTICIPANT,
+  RESET_EVENT_ADDED,
+  RESET_MEDIA_UPLOADED
 } from '../types';
 import store from '../store';
 import axios from 'axios';
@@ -36,18 +39,9 @@ export const addEvent = (event) => (dispatch) => {
       }
       axios.post('/event', event).then((res) => {
         dispatch({
-          type: EVENT_ADDED
-        });
-        dispatch({
           type: ADD_EVENT,
           payload: {
-            name: res.data.name,
-            description: res.data.description,
-            geoHash: res.data.geoHash,
-            geoPoint: res.data.geoPoint,
-            //primatyTag: res.data.tags[0],
-            startTime: res.data.startTime,
-            endTime: res.data.endTime
+            ...res.data
           }
         });
         dispatch({
@@ -92,6 +86,7 @@ export const joinEvent = (eventId) => (dispatch) => {
       payload: 'Event has been added to your schedule'
     })
   }).catch((err) => {
+    console.log(err.response);
     dispatch({
       type: LEAVE_EVENT,
       payload: {
@@ -102,7 +97,7 @@ export const joinEvent = (eventId) => (dispatch) => {
     if(err.response && err.response.status === 405) {
       dispatch({
         type: ALERT_USER,
-        payload: 'Clear your schedule for this time!'
+        payload: err.response.data.error
       })
     } else {
       dispatch({
@@ -169,7 +164,7 @@ export const getUserEvents = (handle) => (dispatch) => {
 
 export const filterEvents = (filter) => (dispatch) => {
   dispatch({
-    type: LOADING_UI
+    type: LOADING_DATA
   });
   delete axios.defaults.headers.common["Authorization"];
   console.log('filter: ', filter);
@@ -228,7 +223,7 @@ export const filterEvents = (filter) => (dispatch) => {
 export const setLocations = (filter) => (dispatch) => {
   console.log('in data actinos: ', filter);
   dispatch({
-    type: LOADING_UI
+    type: LOADING_DATA
   });
   axios.post('/events', filter).then((res) => {
     res.data.forEach(event => {
@@ -245,6 +240,7 @@ export const setLocations = (filter) => (dispatch) => {
       type: CLEAR_ERRORS
     });
   }).catch((err) => {
+    console.log(err);
     dispatch({
       type: SET_ERRORS,
       payload: err.response.data
@@ -313,5 +309,22 @@ export const changeParticipantStatus = (body) => (dispatch) => {
   dispatch({
     type: CHANGE_PARTICIPANT_STATUS,
     payload: body
+  })
+}
+
+export const removeUserFromEvent = (user) => dispatch => {
+  console.log('user removed!');
+  dispatch({
+    type: REMOVE_PARTICIPANT,
+    payload: user
+  })
+}
+
+export const resetUploadFlags = () => dispatch => {
+  dispatch({
+    type: RESET_EVENT_ADDED
+  })
+  dispatch({
+    type: RESET_MEDIA_UPLOADED
   })
 }

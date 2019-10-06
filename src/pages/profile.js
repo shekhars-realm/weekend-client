@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import $ from 'jquery';
@@ -6,13 +6,20 @@ import $ from 'jquery';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import {withStyles} from '@material-ui/core/styles';
+import Hidden from '@material-ui/core/Hidden';
 //components imports
 import Profile from '../components/Profile/Profile';
+import ProfileMobileView from '../components/Profile/ProfileMobileView';
+import ListMobileView from '../components/Moments/ListMobileView';
+import Post from '../components/Moments/Post';
+import List from '../components/Moments/List';
+import Navbar from '../components/Layout/Navbar'
 import PostWrite from '../components/WriteAbout/PostWrite';
 import EventCard from '../components/Events/EventCard';
 import EventListSkeleton from '../components/Skeletons/EventListSkeleton';
 import Schedule from '../components/Profile/Schedule'
 import AddEvent from '../components/Events/AddEvent';
+import SwitchTabs from '../components/Layout/SwitchTabs';
 //redux imports
 import { connect } from 'react-redux';
 import {getUserEvents} from '../redux/actions/dataActions';
@@ -107,19 +114,16 @@ class profile extends Component {
     </Paper>
     )
     return (
-      <Grid container spacing={0}>
-        <Grid item sm={1} xs={12}/>
-        <Grid style={{padding: '10px'}} item sm={3} xs={12}>
-          <Profile history={this.props.history} handle={this.state.handle}/>
+      <Fragment>
+        <Grid container spacing={0}>
+          <Grid item lg={4} xl={4} md={2}/>
+          <Grid style={{padding: '10px'}} item md={8} sm={12} lg={4} xl={4} xs={12}>
+            <ProfileMobileView history={this.props.history} handle={this.state.handle}/>
+            <SwitchTabs sameUserLoaded={sameUserLoaded} events={events} user={this.props.match.params.handle}/>
+          </Grid>
+          <Grid item lg={4} xl={4} md={2}/>
         </Grid>
-        <Grid style={{padding: '10px'}} item sm={4} xs={12}>
-          <Schedule/>
-        </Grid>
-        <Grid style={{padding: '10px'}} item sm={3} xs={12}>
-          {eventList}
-        </Grid>
-        <Grid item sm={1} xs={12}/>
-      </Grid>
+      </Fragment>
     );
   }
 }
@@ -128,14 +132,15 @@ profile.propTypes = {
   events: PropTypes.array.isRequired,
   loadingData: PropTypes.bool.isRequired,
   getUserEvents: PropTypes.func.isRequired,
-  handle: PropTypes.string.isRequired
+  handle: PropTypes.string.isRequired,
+  loadedHandle: PropTypes.string.isRequired
 };
 
 const mapStateToProps = (state) => ({
   events: state.data.events,
   loadingData: state.data.loading,
-  handle: state.user.credentials.handle,
   loadedHandle: state.user.loadedUser.handle,
+  handle: state.user.credentials.handle,
   sameUserLoaded: state.user.sameUserLoaded
 });
 

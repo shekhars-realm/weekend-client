@@ -47,8 +47,8 @@ class DeleteEvent extends React.Component {
         <Button style={{
           width: '30%',
           marginTop: 30
-        }} variant="contained" color="primary" onClick={this.handleOpen}>
-          Delete Event
+        }} color="secondary" onClick={this.handleOpen}>
+          Delete
         </Button>
         <Dialog
           open={this.state.open}
